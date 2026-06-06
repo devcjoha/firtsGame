@@ -1,18 +1,27 @@
 # 🎯 RETO-GUIA-QUINCE.md
 
-## 🎯 Reto goCoder del Día 15: Ubicación Estratégica de la Victoria
+# 🎯 RETO-GUIA-QUINCE.md
 
-¡Fabuloso! Tu juego ya tiene una condición clara de victoria. Ahora, tu trabajo como desarrollador y diseñador de niveles es calibrar el juego para que la meta requiera verdadera destreza para ser alcanzada.
+## 🎯 Reto Coder Hero del Día 15: Ajuste de Dificultad y Personalización Épica
+
+¡Increíble trabajo, Coder! Tu videojuego ya cuenta con una condición oficial y profesional para ganar. Ahora, tu trabajo como diseñador de videojuegos (*Level Designer*) es calibrar el escenario para que alcanzar el portal de victoria requiera verdadera destreza en los dedos.
 
 ### Tus tareas de hoy:
 
-1. **La Meta Flotante Exigente:** Actualmente la meta está en `y: 120`. Cambia su posición o el arreglo de tus `obstaculos` de modo que la meta quede justo encima de una plataforma muy alta y estrecha, obligando al jugador a realizar un salto milimétrico perfecto para poder tocarla.
-2. **Mensaje Personalizado:** Modifica el texto del cartel de victoria en el HTML por una frase espacial épica inventada por ti (ej: *"¡Universo Salvado! Eres un Coder de Élite"*).
+1. **La Meta de Alta Dificultad:** Actualmente la última plataforma (la de color magenta) se encuentra en las coordenadas `x: 2500, y: 200`. Modifica la posición de la meta (`meta.current.x` y `meta.current.y`) en tu código para que quede suspendida en el aire más arriba o más lejos, obligando al jugador a realizar un salto diagonal perfecto a máxima velocidad desde el borde del bloque para poder rozarla.
+2. **Mensaje de Triunfo Propio:** Modifica el texto del cartel de victoria en el HTML por una frase espacial épica inventada por ti (por ejemplo: *"¡Universo A Salvo! Has alcanzado el rango de Desarrollador Intergaláctico"*).
+3. **El Color de la Energía:** Cambia el color interior de la meta en el pincel de dibujo (`ctx.fillStyle`) para que combine con el estilo visual de tu personaje o el fondo de tu pantalla.
 
 ---
 
 ### 🧠 Pregunta para pensar de ingenieros de software:
 
-¿Por qué usamos un estado de React (`useState`) para controlar la aparición del cartel de Victoria, pero usamos un `useRef` para manejar los datos de la posición de la Meta?
+Hoy implementamos **Pointer Events** (`onPointerDown` / `onPointerUp`) y eliminamos por completo los antiguos eventos duplicados de Mouse y Touch en la botonera móvil.
 
-*Pista: Recuerda qué pasa con el rendimiento de nuestro bucle de juego continuo de 60 fotogramas por segundo cuando un estado cambia constantemente.*
+* ¿Por qué en el desarrollo web moderno los ingenieros prefieren usar la familia de eventos *Pointer* en lugar de escribir código separado para pantallas táctiles y ratones de computadora? ¿Qué ventajas nos da esto a medida que nuestro código crece y escala en otros dispositivos como tablets o pantallas de TV?
+
+En el desarrollo de hoy usamos un estado tradicional de React (`useState`) para controlar la aparición de la pantalla de Victoria, pero usamos una referencia (`juegoGanadoRef`) para manejar la lógica dentro de las físicas del bucle de juego.
+
+* ¿Por qué crees que hacer este trabajo en equipo entre una Referencia y un Estado es la mejor solución para un videojuego?
+
+*Pista: Recuerda la diferencia en cómo reaccionan las Referencias y los Estados ante cada fotograma continuo de nuestro Game Loop.*

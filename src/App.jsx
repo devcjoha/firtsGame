@@ -1,4 +1,5 @@
 import MiJuego from "./components/MiJuego";
+// import DiaTrece from "./components/completos/DiaTrece";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <main className="w-full max-w-screen flex items-center justify-center">
         {/* Renderizado de nuestro componente principal de juego */}
         <MiJuego />
+        {/* <DiaTrece/> */}
       </main>
 
       <footer className="mt-2 text-center text-xs text-slate-500 ">

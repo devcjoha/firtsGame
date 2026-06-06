@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { resizeCanvas } from "../utils/resizeCanvas";
-import { activarPantallaCompleta } from "../utils/pantallaCompleta";
+import { resizeCanvas } from "../../utils/resizeCanvas";
+import { activarPantallaCompleta } from "../../utils/pantallaCompleta";
 import {
   ArrowLeft,
   ArrowRight,
@@ -8,7 +8,7 @@ import {
   Maximize2,
   Minimize2,
 } from "lucide-react";
-import {amarillo, magenta, rojo, verde, violeta} from "../colors/colors"
+import {amarillo, magenta, rojo, verde, violeta} from "../../colors/colors"
 
 function MiJuego() {
   const canvasRef = useRef(null);
@@ -173,8 +173,7 @@ function MiJuego() {
 
         // Comprobamos si los pies del jugador están tocando el techo del bloque
         const tocandoTecho =
-          gamer.y + gamer.alto >= bloque.y &&
-          gamer.y + gamer.alto <= bloque.y + 10;
+          gamer.y + gamer.alto >= bloque.y && gamer.y + gamer.alto <= bloque.y + 10;
 
         // Si está alineado, tocando el techo y va cayendo (velocidadY positiva o cero)
         if (alineadoEnX && tocandoTecho && gamer.velocidadY >= 0) {

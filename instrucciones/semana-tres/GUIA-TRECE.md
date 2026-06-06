@@ -65,7 +65,7 @@ obstaculos.current.forEach((bloque) => {
 
   // Comprobamos si los pies del jugador están tocando el techo del bloque
   const tocandoTecho =
-    gamer.y + gamer.alto >= bloque.y && gamer.y + gamer.alto <= bloque.y + 15;
+      gamer.y + gamer.alto >= bloque.y && gamer.y + gamer.alto <= bloque.y + 10;
 
   // Si está alineado, tocando el techo y va cayendo (velocidadY positiva o cero)
   if (alineadoEnX && tocandoTecho && gamer.velocidadY >= 0) {
