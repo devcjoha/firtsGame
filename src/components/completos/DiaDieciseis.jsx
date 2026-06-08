@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { resizeCanvas } from "../utils/resizeCanvas";
-import { activarPantallaCompleta } from "../utils/pantallaCompleta";
+import { resizeCanvas } from "../../utils/resizeCanvas";
+import { activarPantallaCompleta } from "../../utils/pantallaCompleta";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,7 +16,7 @@ import {
   violeta,
   azul,
   cyan,
-} from "../colors/colors";
+} from "../../colors/colors";
 
 function MiJuego() {
   const canvasRef = useRef(null);

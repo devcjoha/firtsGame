@@ -21,7 +21,7 @@ Ahora `imagenFondo` es la variable que contendrá la imagen que elijamos.
 ```js
 const imagenFondo = new Image();
 // ⚡Le damos la dirección  para que encuentre la imagen
-imagenFondo.src = "./src/assets/bg-cuatro";
+imagenFondo.src = "./src/assets/bg-seis";
 ```
 
 4. 🎯 Creamos el interruptor que indique que si se cargó la imagen .

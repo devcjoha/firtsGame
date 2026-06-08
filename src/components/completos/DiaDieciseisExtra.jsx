@@ -22,12 +22,10 @@ function MiJuego() {
   const canvasRef = useRef(null);
   const animacionRef = useRef(null);
   const contenedorRef = useRef(null);
-  const puntosRef = useRef(0);
-
   const [esPantallaCompleta, setEsPantallaCompleta] = useState(false);
   const ANCHO_LOGICO = 1000;
   const ALTO_LOGICO = 500;
-  const ANCHO_MAPA_TOTAL = 5000; // ✨ NUEVO: ¡Tu mundo ahora mide 3 veces más!
+  const ANCHO_MAPA_TOTAL = 3000; // ✨ NUEVO: ¡Tu mundo ahora mide 3 veces más!
   /**************************************
     🌌 CONFIGURACIÓN PARALLAX (EXTRA)
   ************************************* */
@@ -74,20 +72,6 @@ function MiJuego() {
     { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 4 (Morada)
     { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta }, // ¡La plataforma final!
   ]);
-  /**************************************
-    💎 NUEVO DÍA 17: COLECCIONABLES Y PUNTAJE
-  ************************************* */
-
-  const objeto = useRef([
-    { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
-    { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-    { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
-    { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
-    { x: 1550, y: 170, ancho: 50, alto: 50, color: amarillo },
-    { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-    { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
-    { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
-  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -112,7 +96,7 @@ function MiJuego() {
 
     const imagenFondo = new Image();
     // Le damos la dirección de internet de la foto
-    imagenFondo.src = "./src/assets/fondos/bg-seis.png";
+    imagenFondo.src = "./src/assets/bg-seis.png";
     // imagenFondo.src =
     //   "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=800&auto=format&fit=crop";
 
@@ -125,7 +109,7 @@ function MiJuego() {
     ************************************* */
     // 1. Sprite de la Nave del Jugador
     const imagenJugador = new Image();
-    imagenJugador.src = "./src/assets/jugador/astro-4.png";
+    imagenJugador.src = "./src/assets/astro-4.png";
     let jugadorSpriteCargado = false;
     imagenJugador.onload = () => {
       jugadorSpriteCargado = true;
@@ -133,19 +117,10 @@ function MiJuego() {
 
     // 2. Sprite de Textura para las Plataformas
     const imagenPlataforma = new Image();
-    imagenPlataforma.src = "./src/assets/plataformas/metal-1.jpg";
+    imagenPlataforma.src = "./src/assets/metal-4.jpg";
     let plataformaSpriteCargado = false;
     imagenPlataforma.onload = () => {
       plataformaSpriteCargado = true;
-    };
-    // 💎 3. Sprite para los objetos Coleccionables
-    const imagenObjeto = new Image();
-    imagenObjeto.src = "./src/assets/coleccionables/cristal-5.png";
-    const imagenObjetoBonus = new Image();
-    imagenObjetoBonus.src = "./src/assets/coleccionables/cristal-4.png";
-    let objetoSpriteCargado = false;
-    imagenObjeto.onload = () => {
-      objetoSpriteCargado = true;
     };
     /**************************************
       🔄️ BUCLE DEL JUEGO
@@ -355,7 +330,7 @@ function MiJuego() {
         ----------------------------------------------------*/
       ctx.fillStyle = "#ffffff";
       ctx.font = "20px sans-serif";
-      ctx.fillText("💎 " + puntosRef.current, 50, 50);
+      ctx.fillText("¡Fondo Cargado con Éxito!", 50, 50);
 
       /* ----------------------------------------------------
       🧱 ACTUALIZADO DÍA 16: Dibujar Plataformas con Sprites
@@ -384,52 +359,6 @@ function MiJuego() {
         ctx.lineWidth = 2;
         ctx.strokeRect(bloqueEnPantallaX, bloque.y, bloque.ancho, bloque.alto);
       });
-
-      /* ----------------------------------------------------
-      💎 NUEVO DÍA 17: DETECTOR Y DIBUJO DE OBJETOS
-      ----------------------------------------------------*/
-      // A. Filtramos y detectamos colisiones en un solo paso matemático
-      objeto.current = objeto.current.filter((objeto) => {
-        const chocandoConObjeto =
-          gamer.x + gamer.ancho > objeto.x &&
-          gamer.x < objeto.x + objeto.ancho &&
-          gamer.y + gamer.alto > objeto.y &&
-          gamer.y < objeto.y + objeto.alto;
-
-        if (chocandoConObjeto) {
-          // 🌟 REVISAMOS EL TIPO DE OBJETO PARA DAR EL BOTÍN
-          if (objeto.tipo === "bonus") {
-            puntosRef.current += 300; // ¡Los bonus dan el triple!
-          } else {
-            puntosRef.current += 100; // Un objeto normal da 100
-          }
-          ctx.fillStyle = objeto.color;
-          return false; // Se elimina del mapa inmediatamente
-        }
-        return true; // Si no hay choque, el coleccionable se mantiene vivo
-      });
-
-      // B. Dibujamos en el Lienzo los coleccionables que sobrevivieron al filtro
-      objeto.current.forEach((objeto) => {
-        const objetoEnPantallaX = objeto.x - camaraX.current;
-
-        if (objetoSpriteCargado) {
-          // 🌟 SELECCIONAMOS EL SPRITE CORRECTO SEGÚN EL TIPO
-          const spriteElegido =
-            objeto.tipo === "bonus" ? imagenObjetoBonus : imagenObjeto;
-          ctx.drawImage(
-            spriteElegido,
-            objetoEnPantallaX,
-            objeto.y,
-            objeto.ancho,
-            objeto.alto,
-          );
-        } else {
-          ctx.fillStyle = objeto.color;
-          ctx.fillRect(objetoEnPantallaX, objeto.y, objeto.ancho, objeto.alto);
-        }
-      });
-
       /* ----------------------------------------------------
       🏁 NUEVO DÍA 15: RENDERIZAR LA META EN EL CANVAS
       ----------------------------------------------------*/
@@ -479,7 +408,7 @@ function MiJuego() {
         👇 Siguiente frame
       ----------------------------------------------------*/
       animacionRef.current = requestAnimationFrame(bucleJuego);
-    };
+    };;;
     /* ----------------------------------------------------
       Hasta acá el bucleJuego 👆
       ----------------------------------------------------*/
@@ -562,22 +491,11 @@ function MiJuego() {
     jugador.current.vx = 0;
     jugador.current.velocidadY = 0;
     jugador.current.saltando = false;
-    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
-    // 💎 NUEVO DÍA 17: RESETEAR coleccionables Y MARCADOR
-    puntosRef.current = 0;
-    objeto.current = [
-      { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
-      { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
-      { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
-      { x: 1550, y: 170, ancho: 50, alto: 50, color: amarillo },
-      { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
-      { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
-    ];
+
     // 2. Apagamos los interruptores de victoria
     juegoGanadoRef.current = false;
     setJuegoGanado(false);
+    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
     // Si quieres, también puedes reestablecer meta y obstaculos si cambia algo
   };
   /**************************************
@@ -585,11 +503,10 @@ function MiJuego() {
   ************************************* */
   return (
     <div className="bg-slate-950 flex flex-col items-center justify-center ">
-      <header className="header-juego text-center lg:mb-4 flex flex-col items-center gap-1">
+      <header className="header-juego  text-center lg:mb-4 lg:block">
         <h1 className="titulo-juego text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-orange-400 via-indigo-400 to-orange-200 tracking-tight">
-          ¡Misión Espacial goCoder!
+          Hola Mundo!
         </h1>
-     
       </header>
       {/* 📦 CONTENEDOR MAESTRO: Entra completo a pantalla completa, salvando los botones */}
       <div

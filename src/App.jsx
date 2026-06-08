@@ -1,5 +1,5 @@
 import MiJuego from "./components/MiJuego";
-// import DiaTrece from "./components/completos/DiaTrece";
+// import DiaDieciseis from "./components/completos/DiaDieciseis";
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       {/* <div className="w-80 h-80"> */}
       {/* <img
             className="w-80 h-80 object-contain mx-auto mb-4"
-            src="./src/assets/dev-young-uno.png"
+            src="./src/assets/coder/dev-young-uno.png"
             alt="imagen Hero"
           /> */}
       {/* </div> */}
@@ -24,7 +24,7 @@ function App() {
       <main className="w-full max-w-screen flex items-center justify-center">
         {/* Renderizado de nuestro componente principal de juego */}
         <MiJuego />
-        {/* <DiaTrece/> */}
+        {/* <DiaDieciseis/> */}
       </main>
 
       <footer className="mt-2 text-center text-xs text-slate-500 ">

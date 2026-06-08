@@ -57,7 +57,7 @@ Busca la sección dentro del `useEffect` donde se configura la `imagenFondo`. Ju
     ************************************* */
     // 1. Sprite de la Nave del Jugador
     const imagenJugador = new Image();
-    imagenJugador.src = "./src/assets/player-ship.png";
+    imagenJugador.src = "./src/assets/jugador/player-ship.png";
     let jugadorSpriteCargado = false;
     imagenJugador.onload = () => {
       jugadorSpriteCargado = true;
@@ -65,21 +65,13 @@ Busca la sección dentro del `useEffect` donde se configura la `imagenFondo`. Ju
 
     // 2. Sprite de Textura para las Plataformas
     const imagenPlataforma = new Image();
-    imagenPlataforma.src = "./src/assets/platform-texture.png";
+    imagenPlataforma.src = "./src/assets/plataformas/metal-texture-2.jpg";
     let plataformaSpriteCargado = false;
     imagenPlataforma.onload = () => {
       plataformaSpriteCargado = true;
     };
 
 ```
-
-> 💡 **Nota de Ayuda:** Si aún no has descargado tus imágenes en la carpeta `assets`, puedes usar temporalmente estos enlaces directos de internet en el `.src`:
-> * Nave: `"https://imgbb.com/6wXvB8G/player-ship.png"`
-> * Plataforma: `"https://imgbb.com/vYm6X8X/platform-texture.png"`
-> 
-> 
-
----
 
 ### Paso 2: Interceptar el Dibujo de las Plataformas
 
@@ -93,7 +85,7 @@ Modifica el bloque para que incorpore el sprite:
       ----------------------------------------------------*/
       obstaculos.current.forEach((bloque) => {
         // Aplicamos la fórmula matemática de la cámara
-        const bloqueEnPantallaX = block.x - camaraX.current;
+        const bloqueEnPantallaX = bloque.x - camaraX.current;
 
         if (plataformaSpriteCargado) {
           // Reemplazamos el fillRect por la textura real
@@ -120,9 +112,9 @@ Modifica el bloque para que incorpore el sprite:
 
 ---
 
-### Paso 3: Transformar el Cuadrado del Jugador en una Nave
+### Paso 3: Transformar el Cuadrado en un Jugador
 
-Ahora ve a la parte final del `bucleJuego`, justo donde se dibuja el personaje principal en el lienzo. Reemplazaremos el pintado del cuadrado sólido por nuestra nave espacial usando la misma lógica de protección.
+Ahora ve a la parte final del `bucleJuego`, justo donde se dibuja el personaje principal en el lienzo. Reemplazaremos el pintado del cuadrado sólido por nuestra imagen del jugador escogido usando la misma lógica de protección.
 
 Actualiza la sección de dibujo del jugador para que quede así:
 

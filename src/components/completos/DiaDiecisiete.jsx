@@ -27,7 +27,7 @@ function MiJuego() {
   const [esPantallaCompleta, setEsPantallaCompleta] = useState(false);
   const ANCHO_LOGICO = 1000;
   const ALTO_LOGICO = 500;
-  const ANCHO_MAPA_TOTAL = 5000; // ✨ NUEVO: ¡Tu mundo ahora mide 3 veces más!
+  const ANCHO_MAPA_TOTAL = 3000; // ✨ NUEVO: ¡Tu mundo ahora mide 3 veces más!
   /**************************************
     🌌 CONFIGURACIÓN PARALLAX (EXTRA)
   ************************************* */
