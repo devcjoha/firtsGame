@@ -1,4 +1,4 @@
-## 🎯 Reto Coder Hero del Día: El Borde del Universo
+## 🎯 Reto Coder GoCoder del Día: El Borde del Universo
 
 Intenta cambiar el número `150` en la fórmula de la cámara por `250` o `canvas.width / 2`. ¿Qué pasa con la posición del personaje en la pantalla cuando corre? ¡Experimenta y descubre tu encuadre favorito!
 
@@ -15,7 +15,7 @@ if (camaraX.current < 0) {
 // ✨ NUEVO BLOQUEO DERECHO DEL RETO:
 // Si la cámara intenta pasar de 0 (Ancho del Fondo 1000 - Ancho Pantalla 1000), la frenamos
 if (camaraX.current > 0) {
-  camaraX.current = 0; 
+  camaraX.current = 0;
 }
 ```
 

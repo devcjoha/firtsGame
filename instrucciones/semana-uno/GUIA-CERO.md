@@ -16,8 +16,8 @@
 
   💻**npm** (Node Package Manager) es el gestor de paquetes y dependencias predeterminado para Node.js. Funciona como una gigantesca tienda de software donde los programadores comparten y descargan herramientas o librerías de código abierto, evitando tener que "reinventar la rueda" en sus proyectos de JavaScript
   _ Instalación de Node.js ("el motor que nos deja usar herramientas").
-  🔗 [Enlace instalación](https://nodejs.org/)
-  _ Qué instalar: Versión LTS (Long Term Support) actual (se recomienda Node.js v20 o v22).
+  🔗 [Enlace instalación](https://nodejs.org/en/download/)
+  _ Qué instalar: Versión LTS (Long Term Support) actual.
 
   📢 **Nota para la instalación: Durante el asistente de instalación en Windows, asegúrate de dejar marcadas todas las opciones por defecto (especialmente la de "Add to PATH").**
 

@@ -5,6 +5,7 @@
 # GUIA 1 🚀
 
 - NOTA: Del lado izquierdo en VSC está el panel del proyecto, en él podrás ver todas las carpetas que existen y trabajan para tu proyecto. Muchas de ellas no necesitas tocarlas, mucho menos modificarlas. Tu profe te explicará la estructura de carpetas con un poco más de detalle.
+
 1. Busca el archivo `App.jsx` dentro de la carpeta `src` y ábrelo haciendo click en él.
 2. Presiona `ctrl + Ñ` en el teclado para abrir la terminal. Coloca el cursor del mouse en la terminal y escribe `npm run dev` en el promp de la terminal,
 
@@ -85,8 +86,8 @@ function App() {
       </main>
 
       <footer>
-        © {new Date().getFullYear()} Curso inicial para Jóvenes
-        Desarrolladores. Creado por
+        © {new Date().getFullYear()} Curso inicial para Jóvenes Desarrolladores.
+        Creado por
         <a
           href="https://github.com/devcJoha"
           className="text-indigo-400 hover:underline"
@@ -111,26 +112,23 @@ Vamos a escribir el título de la página.
 - Abre una etiqueta `<h1>` Escribe el título y cierra la etiqueta `</h1>`. Mira el navegador.
 
 - Ahora vamos a hacer que ese texto se vea más llamativo: \* Dentro de la etiqueta `h1` que abre coloca este bloque de código:
-  
+
       ```js
-  
+
       className="p-2 text-xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-indigo-400 to-purple-500 tracking-tight sm:text-4xl"
-  
+
       ```
-  
+
     **Acabas de aplicar estilo al título del juego**
-  
+
   📢 Los elementos o etiquetas HTML, tienen propiedades que permiten que podamos modificarlos o configurarlos, una de ellas es la propiedad `className=""` que permite darle estilo a el elemento.
+
 6. Ahora agreguemos una imagen para que nuestra página se vea mucho mejor:
-   
    - Busca la etiqueta de imagen `<img/>` o `<img><img/>` dentro del return de la función `App()`.
-   
    - Una de las propiedades de la etiqueta `img` es `src=""` que significa source(fuente), sirve para decirle a la etiqueta imágen dónde debe buscar la imagen para poder mostrarla en el navegador. En este caso le diremos que la imagen está en la carpeta `src` dentro de la otra carpeta `assets`, de esta manera `./src/assets/nombredelaimagen.extension`.
-     
-     - Dentro de la etiqueta img que abre coloca este bloque de código: `src="./src/assets/young-dev.png" alt="imagen Hero"`.
-     
+     - Dentro de la etiqueta img que abre coloca este bloque de código: `src="./src/assets/young-dev.png" alt="imagen GoCoder"`.
      - `alt=""` es otra propiedad que pide `<img/>` con esta propiedad le damos un nombre a la imagen y si el navegador no la puede mostrar por algún error, mostrará este nombre que coloquemos en alt, asi:
-     
+
      ![alt text](C:\Users\cjadl\myfirst-game\public\instrucciones\alt.png)
 
 Ya podemos reconocer algunos elementos del archivo `App.jsx` y logramos ver y cambiar el renderizado en el navegador,

@@ -1,6 +1,6 @@
-# 🎯 Reto Coder Hero del Día 16: El Director de Arte Espacial
+# 🎯 Reto Coder GoCoder del Día 16: El Director de Arte Espacial
 
-¡Impresionante, goCoder! Tu videojuego ha dejado de ser un prototipo de laboratorio y ahora se ve como un juego listo para publicar. Como *Game Artist*, ahora tu misión es personalizar la identidad visual del proyecto.
+¡Impresionante, goCoder! Tu videojuego ha dejado de ser un prototipo de laboratorio y ahora se ve como un juego listo para publicar. Como _Game Artist_, ahora tu misión es personalizar la identidad visual del proyecto.
 
 ### Tus tareas de hoy:
 
@@ -15,6 +15,8 @@
 
 Hoy implementamos un interruptor de seguridad (`jugadorSpriteCargado = true`) que se activa únicamente adentro de la función `.onload` de la imagen.
 
-* Si nuestro ciclo de juego (`requestAnimationFrame`) intenta dibujar una imagen en el lienzo usando `ctx.drawImage()` antes de que el archivo termine de descargarse del disco o de internet, el navegador podría ignorar el comando o generar un error visual. ¿Por qué el uso de estas variables de control garantiza que el videojuego sea estable y nunca sufra caídas o pantallas en blanco en teléfonos de gama baja o conexiones lentas?
+- Si nuestro ciclo de juego (`requestAnimationFrame`) intenta dibujar una imagen en el lienzo usando `ctx.drawImage()` antes de que el archivo termine de descargarse del disco o de internet, el navegador podría ignorar el comando o generar un error visual. ¿Por qué el uso de estas variables de control garantiza que el videojuego sea estable y nunca sufra caídas o pantallas en blanco en teléfonos de gama baja o conexiones lentas?
+
+```
 
 ```

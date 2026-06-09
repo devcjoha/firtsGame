@@ -10,13 +10,13 @@ Hoy vamos a inyectar un sistema de recompensas en nuestro código. Aprenderemos 
 
 Hasta ahora, para dibujar las plataformas usábamos un organizador llamado `forEach` (que significa "hacer algo por cada elemento"). Hoy necesitamos algo diferente: cuando la nave recolecte un objeto, ese objeto debe desaparecer del juego para siempre.
 
-Para lograrlo, los ingenieros de software usamos una herramienta llamada `.filter()`. Imagina que tienes una caja con Objetoes y quieres sacar los que ya fueron tocados por el jugador. El filtro revisa la lista entera en cada fotograma y dice: _"Si este Objeto NO ha sido tocado, se queda en el juego; si ya lo tocaron, ¡lo borramos de la memoria!"_.
+Para lograrlo, los ingenieros de software usamos una herramienta llamada `.filter()`. Imagina que tienes una caja con Objetos y quieres sacar los que ya fueron tocados por el jugador. El filtro revisa la lista entera en cada fotograma y dice: _"Si este Objeto NO ha sido tocado, se queda en el juego; si ya lo tocaron, ¡lo borramos de la memoria!"_.
 
 ```
 
 ```
 
-        [ Lista de Objetoes en Memoria ]
+        [ Lista de Objetos en Memoria ]
 
 [ Objeto 1 ] [ Objeto 2 (¡Tocado!) ] [ Objeto 3 ]
 │
@@ -115,7 +115,7 @@ ctx.font = "20px sans-serif";
 ctx.fillText("Puntos: " + puntosRef.current, 50, 50);
 ```
 
-### Paso 4: El Detector de Colisiones y Dibujo de Objetoes
+### Paso 4: El Detector de Colisiones y Dibujo de Objetos
 
 Ahora entra al gran `bucleJuego` dentro de tu `useEffect`. Vamos a escribir la lógica que se encarga de revisar si la nave pasa por encima de un Objeto y, al mismo tiempo, los dibujaremos en pantalla aplicando la matemática de la cámara móvil.
 
@@ -126,7 +126,7 @@ Ubica la sección donde termina el detector de colisiones de los obstáculos y a
       });
 
       /* ----------------------------------------------------
-      💎 NUEVO DÍA 17: DETECTOR Y DIBUJO DE ObjetoES
+      💎 NUEVO DÍA 17: DETECTOR Y DIBUJO DE Objetos
       ----------------------------------------------------*/
       // A. Filtramos y detectamos colisiones en un solo paso matemático
       objeto.current = objeto.current.filter((objeto) => {
@@ -145,11 +145,11 @@ Ubica la sección donde termina el detector de colisiones de los obstáculos y a
         return true; // Si no hay choque, el Objeto se mantiene vivo
       });
 
-      // B. Dibujamos en el Lienzo los Objetoes que sobrevivieron al filtro
-      objetoes.current.forEach((objeto) => {
+      // B. Dibujamos en el Lienzo los Objetos que sobrevivieron al filtro
+      objeto.current.forEach((objeto) => {
         const objetoEnPantallaX = objeto.x - camaraX.current;
 
-        if (ObjetoSpriteCargado) {
+        if (objetoSpriteCargado) {
           ctx.drawImage(imagenObjeto, objetoEnPantallaX, objeto.y, objeto.ancho, objeto.alto);
         } else {
           ctx.fillStyle = objeto.color;

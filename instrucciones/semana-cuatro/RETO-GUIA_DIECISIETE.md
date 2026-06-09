@@ -1,4 +1,4 @@
-# 🎯 Reto Coder Hero del Día 17: Diseñador de Niveles y Economía Galáctica
+# 🎯 Reto Coder GoCoder del Día 17: Diseñador de Niveles y Economía Galáctica
 
 ¡Brillante, goCoder! Has añadido un propósito y un hilo conductor a la jugabilidad de tu videojuego. Ahora la exploración espacial tiene una recompensa real y directa. Como _Game Designer_ (Diseñador de Juego), tu trabajo actual es equilibrar la economía y colocar desafíos interesantes.
 
@@ -12,11 +12,9 @@
 
 4. **🚀 EL GRAN DESAFÍO: El Objeto de Bonificación Especial (`Bonus`):**
    Ya tienes cargada en tu código la imagen `imagenObjetoBonus` apuntando a `coin-2.png`. ¡Vamos a hacer que funcione en el juego siguiendo estos 3 pasos de ingeniería de software!
-   
-   * **Paso A (La Etiqueta):** Ve a tu lista `objeto.current` (y también dentro de la función `reiniciarJuego`) y añade una propiedad especial llamada `tipo: "bonus"` a dos o tres objetos de la lista. Por ejemplo:
+   - **Paso A (La Etiqueta):** Ve a tu lista `objeto.current` (y también dentro de la función `reiniciarJuego`) y añade una propiedad especial llamada `tipo: "bonus"` a dos o tres objetos de la lista. Por ejemplo:
      `{ x: 720, y: 220, ancho: 50, alto: 50, color: cyan, tipo: "bonus" }`
-   
-   * **Paso B (El Botín):** Dentro de tu detector de colisiones (`objeto.current.filter`), borra la línea de puntos vieja y escribe una condición `if` inteligente:
+   - **Paso B (El Botín):** Dentro de tu detector de colisiones (`objeto.current.filter`), borra la línea de puntos vieja y escribe una condición `if` inteligente:
      ```javascript
      if (chocandoConObjeto) {
        if (objeto.tipo === "bonus") {
@@ -27,11 +25,17 @@
        return false;
      }
      ```
-   
-   * **Paso C (El Pincel Dinámico):** En la zona donde dibujas (`objeto.current.forEach`), haz que el Canvas elija qué sprite usar dependiendo de la etiqueta del objeto antes de llamar a `ctx.drawImage`:
+   - **Paso C (El Pincel Dinámico):** En la zona donde dibujas (`objeto.current.forEach`), haz que el Canvas elija qué sprite usar dependiendo de la etiqueta del objeto antes de llamar a `ctx.drawImage`:
      ```javascript
-     const spriteElegido = objeto.tipo === "bonus" ? imagenObjetoBonus : imagenObjeto;
-     ctx.drawImage(spriteElegido, objetoEnPantallaX, objeto.y, objeto.ancho, objeto.alto);
+     const spriteElegido =
+       objeto.tipo === "bonus" ? imagenObjetoBonus : imagenObjeto;
+     ctx.drawImage(
+       spriteElegido,
+       objetoEnPantallaX,
+       objeto.y,
+       objeto.ancho,
+       objeto.alto,
+     );
      ```
 
 ---
@@ -41,7 +45,3 @@
 Hoy conectamos el detector de colisiones dentro del método `.filter()` de JavaScript, y actualizamos y pintamos el marcador de puntos en tiempo real usando una referencia directa en la memoria RAM (`puntosRef.current`) conectada al método `ctx.fillText()` del Canvas a 60 FPS.
 
 - ¿Por qué el uso de una referencia física (`useRef`) en combinación con el comando de dibujo directo `ctx.fillText` nos permite mantener el juego corriendo de forma fluida a 60 FPS en computadoras y teléfonos móviles, a diferencia de un estado tradicional de React (`useState`) que congelaría o ralentizaría la pantalla debido a los constantes re-renderizados por milisegundo?
-
-
-
-

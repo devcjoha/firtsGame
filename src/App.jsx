@@ -9,7 +9,7 @@ function App() {
       {/* <img
             className="w-80 h-80 object-contain mx-auto mb-4"
             src="./src/assets/coder/dev-young-uno.png"
-            alt="imagen Hero"
+            alt="imagen GoCoder"
           /> */}
       {/* </div> */}
       {/* <h1 className="p-2 text-xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-indigo-400 to-purple-500 tracking-tight sm:text-4xl"> */}

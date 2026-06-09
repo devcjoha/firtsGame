@@ -37,16 +37,7 @@ function MiJuego() {
   const CALIBRACION_SUELO = 90; // Ajusta este número hasta que el jugador coincida con el suelo dibujado en tu fondo. Si el suelo de tu fondo está muy abajo, pon un número más alto (ej: 60, 80). Si el suelo está muy alto, pon un número más bajo (ej: 20, 0).
 
   const camaraX = useRef(0);
-  // const [juegoGanado, setJuegoGanado] = useState(false); // Estado para activar la pantalla de victoria
-  // 🕹️ NUEVO DÍA 18: MÁQUINA DE ESTADOS GENERAL DEL JUEGO
-  // Los estados válidos serán: "MENU", "JUGANDO", "GAMEOVER", "VICTORIA"
-  const [estadoJuego, setEstadoJuego] = useState("MENU");
-  const estadoJuegoRef = useRef("MENU");
-
-  const cambiarEstadoJuego = (nuevoEstado) => {
-    estadoJuegoRef.current = nuevoEstado;
-    setEstadoJuego(nuevoEstado);
-  };
+  const [juegoGanado, setJuegoGanado] = useState(false); // Estado para activar la pantalla de victoria
   const juegoGanadoRef = useRef(false);
 
   const meta = useRef({
@@ -97,7 +88,65 @@ function MiJuego() {
     { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
     { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
   ]);
-
+  /**************************************
+    🛸 NUEVO EXTRA DÍA 18: ENEMIGOS PATRULLEROS
+  ************************************* */
+  const enemigos = useRef([
+    {
+      x: 950,
+      y: 270, // Flotando un poco antes de la plataforma dos
+      ancho: 70,
+      alto: 70,
+      color: rojo,
+      inicioX: 750, // Guardamos dónde empezó para saber su límite izquierdo
+      rangoPatrulla: 200, // Cuántos píxeles se moverá antes de dar la vuelta
+      velocidadX: 2, // Su velocidad inicial de patrulla
+    },
+    {
+      x: 1950,
+      y: 300, // Sobre la plataforma morada
+      ancho: 50,
+      alto: 50,
+      color: rojo,
+      inicioX: 1950,
+      rangoPatrulla: 180,
+      velocidadX: -2.5, // Este empieza moviéndose hacia la izquierda
+    },
+  ]);
+  /* ----------------------------------------------------
+  🔄 NUEVO DÍA 15: FUNCIÓN REINICIAR DIRECTO EN MEMORIA
+  ----------------------------------------------------*/
+  const reiniciarJuego = () => {
+    // 1. Regresamos al jugador a su posición inicial de forma instantánea
+    jugador.current.x = 100;
+    jugador.current.y = 250;
+    jugador.current.vx = 0;
+    jugador.current.velocidadY = 0;
+    jugador.current.saltando = false;
+    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
+    // 💎 NUEVO DÍA 17: RESETEAR coleccionables Y MARCADOR
+    puntosRef.current = 0;
+    objeto.current = [
+      { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
+      { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+      { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
+      { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
+      { x: 1550, y: 170, ancho: 50, alto: 50, color: amarillo },
+      { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+      { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
+      { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
+    ];
+    // 2. Apagamos los interruptores de victoria
+    juegoGanadoRef.current = false;
+    setJuegoGanado(false);
+    // 🛸 NUEVO EXTRA DÍA 18: RESETEAR POSICIÓN DE ENEMIGOS
+    enemigos.current.forEach((enemigo) => {
+      enemigo.x = enemigo.inicioX;
+      // Restablecemos velocidades originales (positiva para el primero, negativa para el segundo)
+      enemigo.velocidadX = enemigo.inicioX === 950 ? 2 : -2.5;
+    });
+    // Si quieres, también puedes reestablecer meta y obstaculos si cambia algo
+  };
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -156,6 +205,13 @@ function MiJuego() {
     imagenObjeto.onload = () => {
       objetoSpriteCargado = true;
     };
+    // 🛸 4. Sprite para los Enemigos Cósmicos
+    const imagenEnemigo = new Image();
+    imagenEnemigo.src = "./src/assets/jugador/personaje-1.png";
+    let enemigoSpriteCargado = false;
+    imagenEnemigo.onload = () => {
+      enemigoSpriteCargado = true;
+    };
     /**************************************
       🔄️ BUCLE DEL JUEGO
     ************************************* */
@@ -164,14 +220,6 @@ function MiJuego() {
       const gamer = jugador.current;
       // 1. Limpiar
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 🕹️ NUEVO DÍA 18: PAUSAR FÍSICA SI NO ESTAMOS JUGANDO
-      if (estadoJuegoRef.current !== "JUGANDO") {
-        // Si no estamos jugando, solo seguimos solicitando el fotograma para que el canvas responda,
-        // pero NO procesamos movimientos, ni colisiones, ni físicas de teclado.
-        animacionRef.current = requestAnimationFrame(bucleJuego);
-        return;
-      }
 
       /* ----------------------------------------------------
       👇 MOVIMIENTO CONTINUO (Revisamos los interruptores) 👇
@@ -318,7 +366,7 @@ function MiJuego() {
       // Si tocamos la meta y la referencia dice que aún no hemos ganado...
       if (tocandoMeta && !juegoGanadoRef.current) {
         juegoGanadoRef.current = true; // 1. Bloqueamos el motor físico de inmediato
-          cambiarEstadoJuego("VICTORIA"); // 2. Le avisamos a React que dibuje la interfaz
+        setJuegoGanado(true); // 2. Le avisamos a React que dibuje la interfaz
         gamer.vx = 0; // Frenamos la velocidad del personaje
         gamer.velocidadY = 0;
       }
@@ -446,6 +494,53 @@ function MiJuego() {
           ctx.fillRect(objetoEnPantallaX, objeto.y, objeto.ancho, objeto.alto);
         }
       });
+      /* ----------------------------------------------------
+      🛸 NUEVO EXTRA DÍA 18: INTELIGENCIA Y DAÑO DE ENEMIGOS
+      ----------------------------------------------------*/
+      enemigos.current.forEach((enemigo) => {
+        // A. Movimiento Automático: El enemigo camina solo
+        enemigo.x += enemigo.velocidadX;
+
+        // B. Sensor de Giro: Si se aleja mucho de su punto de inicio, ¡se da la vuelta!
+        if (enemigo.x > enemigo.inicioX + enemigo.rangoPatrulla) {
+          enemigo.velocidadX = -Math.abs(enemigo.velocidadX); // Va a la izquierda
+        } else if (enemigo.x < enemigo.inicioX) {
+          enemigo.velocidadX = Math.abs(enemigo.velocidadX); // Va a la derecha
+        }
+
+        // C. Detector de Colisión de Daño con la Nave
+        const chocandoConJugador =
+          gamer.x + gamer.ancho > enemigo.x &&
+          gamer.x < enemigo.x + enemigo.ancho &&
+          gamer.y + gamer.alto > enemigo.y &&
+          gamer.y < enemigo.y + enemigo.alto;
+
+        if (chocandoConJugador) {
+          // ¡Boom! Al chocar con un peligro, penalizamos al jugador reiniciando su posición
+          reiniciarJuego();
+        }
+
+        // D. Dibujar al Enemigo en Pantalla usando la Cámara Móvil
+        const enemigoEnPantallaX = enemigo.x - camaraX.current;
+
+        if (enemigoSpriteCargado) {
+          ctx.drawImage(
+            imagenEnemigo,
+            enemigoEnPantallaX,
+            enemigo.y,
+            enemigo.ancho,
+            enemigo.alto,
+          );
+        } else {
+          ctx.fillStyle = enemigo.color;
+          ctx.fillRect(
+            enemigoEnPantallaX,
+            enemigo.y,
+            enemigo.ancho,
+            enemigo.alto,
+          );
+        }
+      });
 
       /* ----------------------------------------------------
       🏁 NUEVO DÍA 15: RENDERIZAR LA META EN EL CANVAS
@@ -496,7 +591,7 @@ function MiJuego() {
         👇 Siguiente frame
       ----------------------------------------------------*/
       animacionRef.current = requestAnimationFrame(bucleJuego);
-    };;
+    };
     /* ----------------------------------------------------
       Hasta acá el bucleJuego 👆
       ----------------------------------------------------*/
@@ -569,34 +664,7 @@ function MiJuego() {
       document.removeEventListener("fullscreenchange", manejarCambioFullscreen);
     };
   }, []); // 🌟 Dejamos el array vacío para que el motor sea ultra estable y eficiente
-  /* ----------------------------------------------------
-  🔄 NUEVO DÍA 15: FUNCIÓN REINICIAR DIRECTO EN MEMORIA
-  ----------------------------------------------------*/
-  const reiniciarJuego = () => {
-    // 1. Regresamos al jugador a su posición inicial de forma instantánea
-    jugador.current.x = 100;
-    jugador.current.y = 250;
-    jugador.current.vx = 0;
-    jugador.current.velocidadY = 0;
-    jugador.current.saltando = false;
-    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
-    // 💎 NUEVO DÍA 17: RESETEAR coleccionables Y MARCADOR
-    puntosRef.current = 0;
-    objeto.current = [
-      { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
-      { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
-      { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
-      { x: 1550, y: 170, ancho: 50, alto: 50, color: amarillo },
-      { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
-      { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
-    ];
-    // 2. Apagamos los interruptores de victoria
-    juegoGanadoRef.current = false;
-      cambiarEstadoJuego("JUGANDO");
-    // Si quieres, también puedes reestablecer meta y obstaculos si cambia algo
-  };
+
   /**************************************
        RENDERIZADO HTML 👇
   ************************************* */
@@ -607,7 +675,6 @@ function MiJuego() {
           ¡Misión Espacial goCoder!
         </h1>
       </header>
-
       {/* 📦 CONTENEDOR MAESTRO: Entra completo a pantalla completa, salvando los botones */}
       <div
         ref={contenedorRef}
@@ -709,33 +776,8 @@ function MiJuego() {
             <Maximize2 size={20} />
           )}
         </button>
-
-        {/* 🏠 INTERFAZ 1: MENÚ DE INICIO DE MISIÓN */}
-        {estadoJuego === "MENU" && (
-          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs flex flex-col items-center justify-center z-30 select-none p-4">
-            <div className="text-center max-w-md animate-fade-in">
-              <p className="text-orange-400 font-bold uppercase tracking-widest text-sm mb-2">
-                🚀 Sistema Listo para Despegue
-              </p>
-              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-none drop-shadow-md">
-                PILOTA TU DESTINO
-              </h2>
-              <p className="text-slate-400 text-sm sm:text-base mt-4 font-normal px-4">
-                Usa las flechas del teclado o los botones táctiles para esquivar
-                obstáculos cósmicos y recolectar cristales de energía.
-              </p>
-              <button
-                onClick={() => cambiarEstadoJuego("JUGANDO")}
-                className="mt-8 px-8 py-4 bg-linear-to-r from-orange-500 to-indigo-600 text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto text-lg border border-orange-400/30"
-              >
-                INICIAR MISIÓN
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* 🏆 INTERFAZ 2: PANTALLA FLOTANTE DE VICTORIA */}
-        {estadoJuego === "VICTORIA" && (
+        {/* 🏆 NUEVO DÍA 15: PANTALLA FLOTANTE DE VICTORIA 🏆 */}
+        {juegoGanado && (
           <div className="absolute inset-0 bg-slate-600/10 backdrop-blur-md flex flex-col items-center justify-center z-30 animate-fade-in select-none">
             <h2 className="text-4xl sm:text-6xl font-black text-yellow-400 tracking-wider drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] animate-bounce">
               ¡MISIÓN CUMPLIDA!
@@ -744,28 +786,10 @@ function MiJuego() {
               Has conquistado los confines del espacio, goCoder.
             </p>
             <button
-              onClick={reiniciarJuego}
+              onClick={reiniciarJuego} // 🔄 Reinicio líquido sin perder la pantalla completa
               className="mt-8 px-6 py-3 bg-linear-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
             >
               Volver a Jugar
-            </button>
-          </div>
-        )}
-
-        {/* 💀 INTERFAZ 3: PANTALLA DE GAME OVER (LÍNEA BASE PARA MAÑANA) */}
-        {estadoJuego === "GAMEOVER" && (
-          <div className="absolute inset-0 bg-red-950/80 backdrop-blur-md flex flex-col items-center justify-center z-30 animate-fade-in select-none">
-            <h2 className="text-4xl sm:text-6xl font-black text-red-500 tracking-wider drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
-              MISIÓN FALLIDA
-            </h2>
-            <p className="text-slate-300 text-lg mt-4 font-medium text-center px-4">
-              Tu nave ha sufrido daños críticos en el espacio profundo.
-            </p>
-            <button
-              onClick={reiniciarJuego}
-              className="mt-8 px-6 py-3 bg-linear-to-r from-red-600 to-rose-700 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
-            >
-              Reintentar Misión
             </button>
           </div>
         )}

@@ -1,6 +1,6 @@
 # 🎯 RETO-GUIA-CATORCE.md
 
-## 🎯 Reto Coder Hero del Día 14: El Laberinto de Bloques y Techos Bajos
+## 🎯 Reto Coder GoCoder del Día 14: El Laberinto de Bloques y Techos Bajos
 
 ¡Impresionante! Has transformado un mundo de fantasmas en un universo con leyes físicas reales y sólidas. Ahora que las plataformas tienen paredes laterales y techos inferiores habitables, tu misión como diseñador de videojuegos es crear un área de **"Techo Bajo" o "Laberinto Exigente"**.
 
