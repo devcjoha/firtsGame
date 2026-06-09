@@ -50,7 +50,7 @@ function MiJuego() {
   const juegoGanadoRef = useRef(false);
 
   const meta = useRef({
-    x: 2850, // Posicionada estratégicamente al final de la última plataforma
+    x: 3000, // Posicionada estratégicamente al final de la última plataforma
     y: 120, // Flotando en el aire sobre la plataforma magenta
     ancho: 60,
     alto: 80,
