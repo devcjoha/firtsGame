@@ -1,1 +1,0 @@
-1. Comentamos el header en App

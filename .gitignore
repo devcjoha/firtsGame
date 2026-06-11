@@ -1,22 +1,30 @@
-# Logs
+# Logs de errores del sistema
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Carpetas de dependencias y compilación (No se suben)
 node_modules
 dist
 dist-ssr
 *.local
-# Ocultar guías de clase y retos de los alumnos
-/guia-profesor
-/instrucciones
-# Ocultar componentes completos
-/completos
-# Editor directories and files
+
+# =========================================================
+# 🔐 BLINDAJE PEDAGÓGICO (Ocultar guías y retos)
+# =========================================================
+# Ignora absolutamente TODOS los archivos Markdown del proyecto
+*.md
+
+# Ignora carpetas de guías completas (estén donde estén en el proyecto)
+**/guia-profesor/**
+**/instrucciones/**
+**/completos/**
+
+# =========================================================
+# Configuraciones de editores y archivos del sistema
 .vscode/*
 !.vscode/extensions.json
 .idea
