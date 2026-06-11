@@ -15,16 +15,8 @@ import {
   verde,
   violeta,
   cyan,
-  azul
+  blanco,
 } from "../colors/colors";
-import fondo from "../assets/bg-seis.png";
-import jugadorImg from "../assets/astro-4.png";
-import plataformaImg from "../assets/metal-4.jpg";
-import objetoImg from "../assets/estrella-1.png";
-import objetoBonusImg from "../assets/cristal-5.png";
-import peligroImg from "../assets/pinchos-1.png";
-import metaImg from "../assets/meta-1.png";
-import enemigoImg from "../assets/enemigo-1.png";
 
 function MiJuego() {
   const canvasRef = useRef(null);
@@ -63,17 +55,17 @@ function MiJuego() {
   const juegoGanadoRef = useRef(false);
 
   const meta = useRef({
-    x: 4800, // Posicionada estratégicamente al final de la última plataforma
-    y: 120, // Flotando en el aire sobre la plataforma magenta
-    ancho: 60,
-    alto: 80,
-    color: azul, // Un brillante color dorado cósmico (amarillo metálico)
+    x: 4600, // Posicionada estratégicamente al final de la última plataforma
+    y: 208, // Flotando en el aire sobre la plataforma magenta
+    ancho: 350,
+    alto: 200,
+    color: blanco, // Un brillante color dorado cósmico (amarillo metálico)
   });
 
   const jugador = useRef({
     x: 100,
-    y: 250,
-    ancho: 90,
+    y: 50,
+    ancho: 60,
     alto: 90,
     velocidad: 8, // 👇 Bajamos un poco la velocidad base para que el movimiento continuo sea fluido
     color: cyan, //"#53eafd",
@@ -90,147 +82,33 @@ function MiJuego() {
   });
 
   const obstaculos = useRef([
-    { x: 600, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 1 (Roja)
-    { x: 750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
-    { x: 1000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 2 (Verde)
-    { x: 1200, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
-    { x: 1400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 3 (Amarilla)
-    { x: 1600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 4 (Amarilla)
-    { x: 1700, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
-    { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 5 (Morada)
-    { x: 2250, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
-    { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta }, // ¡La plataforma 6!
-
-    { x: 2900, y: 320, ancho: 80, alto: 30, color: rojo }, // Plataforma 7 (Roja)
-    { x: 3100, y: 320, ancho: 80, alto: 30, color: verde }, // Plataforma 8 (Verde)
-    { x: 3300, y: 320, ancho: 80, alto: 30, color: azul }, // Plataforma 9 (azul)
-    
-    { x: 3400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 10 (Amarilla)
-    { x: 3650, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 11 (Amarilla)
-
-    { x: 3750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
-    { x: 4000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 12 (Morada)
+  // { x: 0, y: 410, ancho: 300, alto: 40, color: rojo }, // Plataforma 0 Debajo del jugador inicio
+    { x: 400, y: 300, ancho: 150, alto: 40, color: rojo }, // Plataforma 1
+     { x: 800, y: 220, ancho: 200, alto: 30, color: verde }, // Plataforma 2 
+    { x: 1200, y: 260, ancho: 200, alto: 30, color: verde }, // Plataforma 3 
+    { x: 1500, y: 320, ancho: 300, alto: 100, color: rojo, tipo: "danino" }, // ✨ MODIFICADO DÍA 19: ¡Trampa de espinas!
+    { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 4 
+    { x: 2300, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 5
+    { x: 2600, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 6
+    { x: 2900, y: 200, ancho: 250, alto: 30, color: magenta }, // Plataforma 7
   ]);
   /**************************************
     💎 NUEVO DÍA 17: COLECCIONABLES Y PUNTAJE
   ************************************* */
 
   const objeto = useRef([
-    { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
-    { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-    { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
-    { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
-    { x: 1430, y: 170, ancho: 50, alto: 50, color: amarillo },
-    { x: 1630, y: 80, ancho: 50, alto: 50, color: amarillo },
+    { x: 450, y: 220, ancho: 50, alto: 50, color: amarillo },
+    { x: 865, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+    { x: 1240, y: 200, ancho: 50, alto: 50, color: amarillo },
+    { x: 1280, y: 200, ancho: 50, alto: 50, color: amarillo },
+    { x: 1320, y: 200, ancho: 50, alto: 50, color: amarillo },
+    { x: 1540, y: 80, ancho: 50, alto: 50, color: amarillo },
+    { x: 1580, y: 80, ancho: 50, alto: 50, color: amarillo },
+    { x: 1620, y: 80, ancho: 50, alto: 50, color: amarillo },
     { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
     { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
     { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
-    { x: 3430, y: 150, ancho: 50, alto: 50, color: amarillo }, // Plataforma 9 (Amarilla)
-    { x: 3680, y: 80, ancho: 50, alto: 50, color: amarillo }, // Plataforma 10 (Amarilla)
-    { x: 4050, y: 60, ancho: 70, alto: 70, color: cyan, tipo: "bonus" }, // ✨ Plataforma 1.5
   ]);
-  const enemigos = useRef([
-    {
-      x: 4250,
-      y: 360, // Flotando un poco sobre la plataforma verde
-      ancho: 60,
-      alto: 60,
-      color: rojo,
-      inicioX: 4450, // Guardamos dónde empezó para saber su límite izquierdo
-      rangoPatrulla: 200, // Cuántos píxeles se moverá antes de dar la vuelta
-      velocidadX: 2, // Su velocidad inicial de patrulla
-    },
-    {
-      x: 4450,
-      y: 360, // Sobre la plataforma morada
-      ancho: 60,
-      alto: 60,
-      color: rojo,
-      inicioX: 4250,
-      rangoPatrulla: 180,
-      velocidadX: -2.5, // Este empieza moviéndose hacia la izquierda
-    },
-    {
-      x: 2900,
-      y: 360, // Sobre la plataforma morada
-      ancho: 60,
-      alto: 60,
-      color: rojo,
-      inicioX: 2900,
-      rangoPatrulla: 180,
-      velocidadX: -2.5, // Este empieza moviéndose hacia la izquierda
-    },
-    {
-      x: 3100,
-      y: 360, // Sobre la plataforma morada
-      ancho: 60,
-      alto: 60,
-      color: rojo,
-      inicioX: 3100,
-      rangoPatrulla: 180,
-      velocidadX: -2.5, // Este empieza moviéndose hacia la izquierda
-    },
-  ]);
-
-  const reiniciarJuego = () => {
-    // 1. Restablecer el contador de vidas e inmunidad por completo
-    vidasRef.current = 3;
-    invulnerableRef.current = false;
-    tiempoInvulnerableRef.current = 0;
-    // 2. Regresamos al jugador a su posición inicial segura de forma instantánea
-    jugador.current.x = 100;
-    jugador.current.y = 250;
-    jugador.current.vx = 0;
-    jugador.current.velocidadY = 0;
-    jugador.current.saltando = false;
-    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
-
-    // 3. Resetear el marcador a cero
-    puntosRef.current = 0;
-    // 4. Regenerar el mapa completo de obstáculos (Para que vuelvan a aparecer)
-    obstaculos.current = [
-      { x: 600, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 1 (Roja)
-      { x: 750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
-      { x: 1000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 2 (Verde)
-      { x: 1200, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
-      { x: 1400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 3 (Amarilla)
-      { x: 1600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 4 (Amarilla)
-      { x: 1700, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
-      { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 5 (Morada)
-      { x: 2250, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
-      { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta }, // ¡La plataforma 6!
-      { x: 2800, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 7 (Roja)
-      { x: 3000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 8 (Verde)
-      { x: 3400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 9 (Amarilla)
-      { x: 3600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 10 (Amarilla)
-      { x: 3650, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
-      { x: 4000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 11 (Morada)
-    ];
-    // 5. Regenerar todos los cristales coleccionables del mapa
-    objeto.current = [
-      { x: 450, y: 220, ancho: 50, alto: 50, color: amarillo },
-      { x: 865, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 1240, y: 200, ancho: 50, alto: 50, color: amarillo },
-      { x: 1280, y: 200, ancho: 50, alto: 50, color: amarillo },
-      { x: 1320, y: 200, ancho: 50, alto: 50, color: amarillo },
-      { x: 1540, y: 80, ancho: 50, alto: 50, color: amarillo },
-      { x: 1580, y: 80, ancho: 50, alto: 50, color: amarillo },
-      { x: 1620, y: 80, ancho: 50, alto: 50, color: amarillo },
-      { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
-      { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
-    ];
-    // 🛸 EXTRA. NUEVO DÍA 18: RESETEAR POSICIÓN DE ENEMIGOS
-    enemigos.current.forEach((enemigo) => {
-      enemigo.x = enemigo.inicioX;
-      // Restablecemos velocidades originales (positiva para el primero, negativa para el segundo)
-      enemigo.velocidadX = enemigo.inicioX === 950 ? 2 : -2.5;
-    });
-    // 6. Liberar los cerrojos de estado y regresar a la acción
-    juegoGanadoRef.current = false;
-    cambiarEstadoJuego("JUGANDO");
-    // Si quieres, también puedes reestablecer meta y obstaculos si cambia algo
-  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -255,7 +133,7 @@ function MiJuego() {
 
     const imagenFondo = new Image();
     // Le damos la dirección de internet de la foto
-    imagenFondo.src = fondo;
+    imagenFondo.src = "./src/assets/fondos/bosque-1.jpg";
     // imagenFondo.src =
     //   "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=800&auto=format&fit=crop";
 
@@ -268,7 +146,7 @@ function MiJuego() {
     ************************************* */
     // 1. Sprite de la Nave del Jugador
     const imagenJugador = new Image();
-    imagenJugador.src = jugadorImg;
+    imagenJugador.src = "./src/assets/jugador/dog-1.png";
     let jugadorSpriteCargado = false;
     imagenJugador.onload = () => {
       jugadorSpriteCargado = true;
@@ -276,40 +154,33 @@ function MiJuego() {
 
     // 2. Sprite de Textura para las Plataformas
     const imagenPlataforma = new Image();
-    imagenPlataforma.src = plataformaImg;
+    imagenPlataforma.src = "./src/assets/plataformas/tabla-1.png";
     let plataformaSpriteCargado = false;
     imagenPlataforma.onload = () => {
       plataformaSpriteCargado = true;
     };
     // 💎 3. Sprite para los objetos Coleccionables
     const imagenObjeto = new Image();
-    imagenObjeto.src = objetoImg;
+    imagenObjeto.src = "./src/assets/coleccionables/coin-1.png";
     const imagenObjetoBonus = new Image();
-    imagenObjetoBonus.src = objetoBonusImg;
+    imagenObjetoBonus.src = "./src/assets/coleccionables/coin-2.png";
     let objetoSpriteCargado = false;
     imagenObjeto.onload = () => {
       objetoSpriteCargado = true;
     };
     // 💀 4. Sprite para los Obstáculos de Daño (Espinas/Peligro)
     const imagenPeligro = new Image();
-    imagenPeligro.src = peligroImg; // Asegúrate de tener esta imagen o cámbiala por algo que tengas
+    imagenPeligro.src = "./src/assets/obstaculos/cerca-1.png"; // Asegúrate de tener esta imagen o cámbiala por algo que tengas
     let peligroSpriteCargado = false;
     imagenPeligro.onload = () => {
       peligroSpriteCargado = true;
     };
     // 🏁 5. Sprite para la Meta Final
     const imagenMetaSprite = new Image();
-    imagenMetaSprite.src = metaImg; // <-- Asegúrate de que esta ruta sea correcta
+    imagenMetaSprite.src = "./src/assets/metas/meta-2.png"; // <-- Asegúrate de que esta ruta sea correcta
     let metaImagenCargada = false;
     imagenMetaSprite.onload = () => {
       metaImagenCargada = true;
-    };
-    // 🛸 EXTRA. Sprite para los Enemigos Cósmicos
-    const imagenEnemigo = new Image();
-    imagenEnemigo.src = enemigoImg;
-    let enemigoSpriteCargado = false;
-    imagenEnemigo.onload = () => {
-      enemigoSpriteCargado = true;
     };
     /**************************************
       🔄️ BUCLE DEL JUEGO
@@ -645,74 +516,9 @@ function MiJuego() {
           ctx.fillRect(objetoEnPantallaX, objeto.y, objeto.ancho, objeto.alto);
         }
       });
-/* ----------------------------------------------------
-      🛸 EXTRA NUEVO DÍA 20: INTELIGENCIA Y DAÑO DE ENEMIGOS
-      ----------------------------------------------------*/
-      enemigos.current.forEach((enemigo) => {
-        // A. Movimiento Automático: El enemigo se desplaza solo
-        enemigo.x += enemigo.velocidadX;
 
-        // B. Sensor de Giro: Si se aleja mucho de su punto de inicio, ¡se da la vuelta!
-        if (enemigo.x > enemigo.inicioX + enemigo.rangoPatrulla) {
-          enemigo.velocidadX = -Math.abs(enemigo.velocidadX); // Cambia sentido a la izquierda
-        } else if (enemigo.x < enemigo.inicioX) {
-          enemigo.velocidadX = Math.abs(enemigo.velocidadX); // Cambia sentido a la derecha
-        }
-
-        // C. Detector de Colisión de Daño con la Nave
-        const chocandoConNave =
-          gamer.x + gamer.ancho > enemigo.x &&
-          gamer.x < enemigo.x + enemigo.ancho &&
-          gamer.y + gamer.alto > enemigo.y &&
-          gamer.y < enemigo.y + enemigo.alto;
-
-        if (chocandoConNave) {
-          // 🛡️ Solo aplicamos daño si NO somos invulnerables en este fotograma
-          if (!invulnerableRef.current) {
-            // 1. Descontamos una vida de manera inmediata
-            vidasRef.current -= 1;
-
-            // 2. Encendemos el escudo de inmunidad (60 fotogramas = 1 segundo de seguridad)
-            invulnerableRef.current = true;
-            tiempoInvulnerableRef.current = 60;
-
-            // 3. Teletransportamos al astronauta a la base segura de inicio para evitar muertes instantáneas
-            gamer.x = 100;
-            gamer.y = 250;
-            gamer.vx = 0;
-            gamer.velocidadY = 0;
-
-            // 4. Si los corazones llegan a cero... ¡Fin de la simulación!
-            if (vidasRef.current <= 0) {
-              cambiarEstadoJuego("GAMEOVER");
-            }
-          }
-        }
-
-        // D. Dibujar al Enemigo en Pantalla usando la Cámara Móvil
-        const enemigoEnPantallaX = enemigo.x - camaraX.current;
-
-        if (enemigoSpriteCargado) {
-          ctx.drawImage(
-            imagenEnemigo,
-            enemigoEnPantallaX,
-            enemigo.y,
-            enemigo.ancho,
-            enemigo.alto,
-          );
-        } else {
-          ctx.fillStyle = enemigo.color;
-          ctx.fillRect(
-            enemigoEnPantallaX,
-            enemigo.y,
-            enemigo.ancho,
-            enemigo.alto,
-          );
-        }
-      });
-      
       /* ----------------------------------------------------
-      🏁 NUEVO DÍA 15: RENDERIZAR LA META EN EL CANVAS
+      🏁 ACTUALIZADO: La Meta ahora es un Sprite Real
       ----------------------------------------------------*/
       const metaEnPantallaX = meta.current.x - camaraX.current;
 
@@ -773,7 +579,7 @@ function MiJuego() {
         👇 Siguiente frame
       ----------------------------------------------------*/
       animacionRef.current = requestAnimationFrame(bucleJuego);
-    };
+    };;
     /* ----------------------------------------------------
       Hasta acá el bucleJuego 👆
       ----------------------------------------------------*/
@@ -845,9 +651,48 @@ function MiJuego() {
       // 👇 Y el radar de pantalla completa
       document.removeEventListener("fullscreenchange", manejarCambioFullscreen);
     };
-
   }, []); // 🌟 Dejamos el array vacío para que el motor sea ultra estable y eficiente
-
+  /* ----------------------------------------------------
+  🔄 NUEVO DÍA 15: FUNCIÓN REINICIAR DIRECTO EN MEMORIA
+  ----------------------------------------------------*/
+  const reiniciarJuego = () => {
+    // 1. Regresamos al jugador a su posición inicial de forma instantánea
+    jugador.current.x = 100;
+    jugador.current.y = 250;
+    jugador.current.vx = 0;
+    jugador.current.velocidadY = 0;
+    jugador.current.saltando = false;
+    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
+    // 💎 NUEVO DÍA 17: RESETEAR coleccionables Y MARCADOR
+    puntosRef.current = 0;
+    obstaculos.current = [
+      // { x: 0, y: 410, ancho: 300, alto: 40, color: rojo }, // Plataforma 0 Debajo del jugador inicio
+      { x: 400, y: 300, ancho: 150, alto: 40, color: rojo }, // Plataforma 1
+      { x: 800, y: 220, ancho: 200, alto: 30, color: verde }, // Plataforma 2
+      { x: 1200, y: 260, ancho: 200, alto: 30, color: verde }, // Plataforma 3
+      { x: 1500, y: 320, ancho: 300, alto: 100, color: rojo, tipo: "danino" }, // ✨ MODIFICADO DÍA 19: ¡Trampa de espinas!
+      { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 4
+      { x: 2300, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 5
+      { x: 2600, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 6
+      { x: 2900, y: 200, ancho: 250, alto: 30, color: magenta }, // Plataforma 7
+    ];
+    objeto.current = [
+      { x: 450, y: 220, ancho: 50, alto: 50, color: amarillo },
+      { x: 865, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+      { x: 1240, y: 200, ancho: 50, alto: 50, color: amarillo },
+      { x: 1280, y: 200, ancho: 50, alto: 50, color: amarillo },
+      { x: 1320, y: 200, ancho: 50, alto: 50, color: amarillo },
+      { x: 1540, y: 80, ancho: 50, alto: 50, color: amarillo },
+      { x: 1580, y: 80, ancho: 50, alto: 50, color: amarillo },
+      { x: 1620, y: 80, ancho: 50, alto: 50, color: amarillo },
+      { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+      { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
+      { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
+    ];
+    juegoGanadoRef.current = false;
+    cambiarEstadoJuego("JUGANDO");
+    // Si quieres, también puedes reestablecer meta y obstaculos si cambia algo
+  };;
   /**************************************
        RENDERIZADO HTML 👇
   ************************************* */

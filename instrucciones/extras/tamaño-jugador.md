@@ -10,7 +10,6 @@ No te preocupes, esto es un fenómeno muy común en el desarrollo de videojuegos
 
 En el Canvas de HTML5, cuando le dices al pincel que dibuje una imagen con `ctx.drawImage()`, la computadora toma la esquina **superior izquierda** de la imagen y la pega exactamente en la esquina **superior izquierda** de la hitbox (la caja invisible que calcula los choques).
 
-
 ```
 
 Punto de Anclaje (x, y)
@@ -25,7 +24,7 @@ Punto de Anclaje (x, y)
 
 ```
 
-Si la imagen de tu nave espacial tiene "aire" o espacio vacío en la parte de abajo, o si simplemente la redimensionas y crece hacia los lados, la base del dibujo no coincidirá con la base del bloque lógico, ¡haciendo que el cohete parezca flotar mágicamente sobre las plataformas!
+Si la imagen de tu jugador espacial tiene "aire" o espacio vacío en la parte de abajo, o si simplemente la redimensionas y crece hacia los lados, la base del dibujo no coincidirá con la base del bloque lógico, ¡haciendo que el cohete parezca flotar mágicamente sobre las plataformas!
 
 ---
 
@@ -37,34 +36,33 @@ Vamos a abrir tu archivo `src/components/MiJuego.jsx` y buscaremos el bloque del
 
 ### Paso 1: Modificar el dibujo del jugador (`ctx.drawImage`)
 
-Actualmente, tu código dibuja la nave usando las coordenadas exactas del jugador: `gamer.y`. Vamos a restarle o sumarle píxeles directamente a la posición del dibujo para calibrarlo.
+Actualmente, tu código dibuja la jugador usando las coordenadas exactas del jugador: `gamer.y`. Vamos a restarle o sumarle píxeles directamente a la posición del dibujo para calibrarlo.
 
-*Si tu cohete queda flotando, significa que necesitas **bajar la imagen** o **hacerla más alta** para que cubra la distancia hasta el suelo:*
+_Si tu cohete queda flotando, significa que necesitas **bajar la imagen** o **hacerla más alta** para que cubra la distancia hasta el suelo:_
 
 ```javascript
-      /* ----------------------------------------------------
+/* ----------------------------------------------------
        🚀 ACTUALIZADO DÍA 16: Ajuste de Altura y Alineación
       ----------------------------------------------------*/
-      const jugadorEnPantallaX = gamer.x - camaraX.current;
+const jugadorEnPantallaX = gamer.x - camaraX.current;
 
-      if (jugadorSpriteCargado) {
-        // Calibramos el dibujo sumando o restando un desfase (offset)
-        ctx.drawImage(
-          imagenJugador,
-          jugadorEnPantallaX,   // Posición X en la pantalla
-          gamer.y + 10,         // 🎯 ¡TRUCO!: Sumamos píxeles para BAJAR la imagen hasta el borde del suelo
-          gamer.ancho,          // Ancho del dibujo
-          gamer.alto            // Alto del dibujo
-        );
-      } else {
-        // Respaldo original
-        ctx.fillStyle = gamer.color;
-        ctx.fillRect(jugadorEnPantallaX, gamer.y, gamer.ancho, gamer.alto);
-      }
-
+if (jugadorSpriteCargado) {
+  // Calibramos el dibujo sumando o restando un desfase (offset)
+  ctx.drawImage(
+    imagenJugador,
+    jugadorEnPantallaX, // Posición X en la pantalla
+    gamer.y + 10, // 🎯 ¡TRUCO!: Sumamos píxeles para BAJAR la imagen hasta el borde del suelo
+    gamer.ancho, // Ancho del dibujo
+    gamer.alto, // Alto del dibujo
+  );
+} else {
+  // Respaldo original
+  ctx.fillStyle = gamer.color;
+  ctx.fillRect(jugadorEnPantallaX, gamer.y, gamer.ancho, gamer.alto);
+}
 ```
 
-> 💡 **¡Experimenta con tu número!** Dependiendo de cómo sea tu imagen PNG, cambia ese `gamer.y + 10`. Si se hunde mucho, prueba con `+5`. Si todavía flota, prueba con `+15` o `+20` hasta que veas que las turbinas de la nave toquen exactamente el suelo metálico.
+> 💡 **¡Experimenta con tu número!** Dependiendo de cómo sea tu imagen PNG, cambia ese `gamer.y + 10`. Si se hunde mucho, prueba con `+5`. Si todavía flota, prueba con `+15` o `+20` hasta que veas que las turbinas de el jugador toquen exactamente el suelo metálico.
 
 ---
 
@@ -75,14 +73,13 @@ Si lo que deseas es cambiar el tamaño físico de tu personaje (hacerlo un cohet
 Si aumentas la altura del dibujo (por ejemplo, sumándole `20` píxeles al alto), debes **restarle esos mismos 20 píxeles a la posición Y** para que el cohete crezca hacia arriba como un edificio, manteniendo su base firmemente apoyada:
 
 ```javascript
-        ctx.drawImage(
-          imagenJugador,
-          jugadorEnPantallaX - 10, // Lo movemos un poco a la izquierda para centrar el ancho
-          gamer.y - 20,           // 📐 ¡COMPENSACIÓN!: Restamos 20 para que crezca hacia ARRIBA
-          gamer.ancho + 20,       // Hacemos la imagen 20 píxeles más ancha
-          gamer.alto + 20         // Hacemos la imagen 20 píxeles más alta
-        );
-
+ctx.drawImage(
+  imagenJugador,
+  jugadorEnPantallaX - 10, // Lo movemos un poco a la izquierda para centrar el ancho
+  gamer.y - 20, // 📐 ¡COMPENSACIÓN!: Restamos 20 para que crezca hacia ARRIBA
+  gamer.ancho + 20, // Hacemos la imagen 20 píxeles más ancha
+  gamer.alto + 20, // Hacemos la imagen 20 píxeles más alta
+);
 ```
 
 ¡Haciendo esto, el juego seguirá calculando las colisiones con la precisión milimétrica de siempre, pero visualmente habrás domado por completo los sprites de tu escenario!

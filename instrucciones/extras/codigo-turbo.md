@@ -1,4 +1,4 @@
-## 🛠️ Resolución de la Fase 1: Análisis de los Experimentos
+##  🛠️ EXTRA: Resolución de la Fase 1: Análisis de los Experimentos
 
 Este ejercicio es cualitativo. Debes notar cómo impacta la matemática al comportamiento del Canvas:
 

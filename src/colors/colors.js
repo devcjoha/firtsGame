@@ -10,3 +10,5 @@ export const marron = "#8b4513";
 export const gris = "#808080";
 export const blanco = "#ffffff";
 export const cyan = "#00ffd5";
+export const negro = "#000000";
+// export const degradeBrown = "linear-gradient(344deg, #a07218,#c09521,#e4e65b);"

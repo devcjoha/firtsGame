@@ -1,8 +1,8 @@
 ### 📑 Día 19: Sistema de Daño, Vidas y Efectos Especiales
 
-¡Bienvenidos al **Día 19, goCoders**! Ayer construimos el cerebro del juego: nuestra **Máquina de Estados**. Logramos que el software supiera exactamente cuándo mostrar el menú de inicio, cuándo activar la acción espacial y cuándo congelarse en la gloria de la victoria.
+¡Bienvenidos al **Día 19, goCoders**! Ayer construimos el cerebro organizador del software: nuestra **Máquina de Estados**. Logramos que tu juego supiera exactamente cuándo mostrar el menú de inicio, cuándo activar la acción espacial y cuándo congelarse en la gloria de la victoria.
 
-Hoy añadiremos el ingrediente definitivo que convierte un paseo espacial en un verdadero desafío de supervivencia: **¡El sistema de daño y vidas!** Programaremos un contador de 3 vidas, crearemos un obstáculo peligroso en nuestro mapa y diseñaremos un efecto visual de parpadeo (inmunidad temporal) para que nuestro piloto sepa que ha sufrido un impacto crítico. Si el contador llega a cero, activaremos limpiamente el estado `"GAMEOVER"` que dejamos preparado ayer.
+Hoy añadiremos el ingrediente definitivo que convierte un paseo espacial en un verdadero desafío de supervivencia: **¡El sistema de daño y vidas!** Programaremos un contador de 3 vidas, identificaremos una trampa peligrosa en nuestro mapa y diseñaremos un efecto visual de parpadeo (inmunidad temporal) para que nuestro piloto sepa que ha sufrido un impacto crítico. Si el contador llega a cero, activaremos limpiamente la pantalla de **MISIÓN FALLIDA** (`"GAMEOVER"`) que dejamos preparada ayer.
 
 ---
 
@@ -10,23 +10,33 @@ Hoy añadiremos el ingrediente definitivo que convierte un paseo espacial en un 
 
 En el desarrollo de videojuegos profesionales, cuando un personaje recibe daño, no puede perder todas las vidas en un solo milisegundo por culpa del motor físico que corre a 60 FPS. Necesitamos crear un **estado de inmunidad temporal** (un breve respiro).
 
-Para lograrlo de manera limpia y eficiente dentro de nuestro lienzo dinámico, usaremos:
+Para lograrlo de manera limpia y sin alterar la estructura que ya construiste, usaremos:
 
-* **Un contador de vidas:** Controlado por una referencia en memoria para que la física responda al instante.
+* **Un contador de vidas:** Controlado por una referencia en memoria (`useRef`) para que responda instantáneamente al chocar.
 * **Un temporizador de invulnerabilidad:** Un reloj de cuenta regresiva. Mientras este reloj esté activo, las colisiones dañinas se ignoran.
-* **Un efecto de parpadeo cosmético:** Usaremos el operador matemático del residuo o módulo (`%`) aplicado al tiempo para hacer que el sprite de la nave aparezca y desaparezca rápidamente, avisándole al jugador que está a salvo por unos segundos.
+* **Un efecto de parpadeo cosmético:** Usaremos una operación matemática sobre el tiempo restante para hacer que la nave aparezca y desaparezca rápidamente, avisando al jugador que está a salvo por unos segundos.
 
 ---
 
 ## 🛠️ Tu Turno: Manos a la Obra
 
-Abramos nuestro archivo `src/components/MiJuego.jsx`. Vamos a evolucionar nuestra arquitectura física y visual.
+Abramos nuestro archivo `src/components/MiJuego.jsx`. Vamos a evolucionar nuestra arquitectura física y visual paso a paso, buscando las líneas exactas de los días anteriores.
 
 ### Paso 1: Declarar el Sistema de Supervivencia
 
-Busca la sección superior de tu componente donde declaras las referencias físicas (cerca de `puntosRef`). Añadiremos las variables encargadas de medir la salud de nuestra nave y su tiempo de recuperación.
+Busca en la parte superior de tu componente (justo debajo de donde declaras `puntosRef`) las variables de estado anteriores. Añadiremos las referencias encargadas de medir la salud de la nave y su tiempo de recuperación.
 
-Agrega estas tres líneas justo debajo de tu `puntosRef`:
+**Ubica este bloque en tu archivo:**
+
+```javascript
+  const canvasRef = useRef(null);
+  const animacionRef = useRef(null);
+  const contenedorRef = useRef(null);
+  const puntosRef = useRef(0);
+
+```
+
+**E inyecta estas tres líneas inmediatamente abajo:**
 
 ```javascript
   // 💀 NUEVO DÍA 19: CONTROL DE VIDAS E INMUNIDAD
@@ -38,16 +48,28 @@ Agrega estas tres líneas justo debajo de tu `puntosRef`:
 
 ---
 
-### Paso 2: Cargar el Sprite de los Obstáculos Dañinos
+### Paso 2: Crear el Asset para los Obstáculos Dañinos
 
-Para que los niños identifiquen el peligro visualmente, cargaremos una textura espacial especial (como espinas de metal o plasma radiactivo).
+Para que los jugadores identifiquen el peligro visualmente, cargaremos una textura espacial especial (como espinas de metal o plasma radiactivo).
 
-Busca el lugar dentro de tu `useEffect` donde se cargan los sprites (debajo de `imagenObjetoBonus.src`) y añade la carga de este nuevo recurso:
+Ve dentro de tu `useEffect` principal y busca el lugar exacto donde se cargan los sprites de los coleccionables (`imagenObjeto.src`).
+
+**Ubica estas líneas en tu código:**
+
+```javascript
+    let objetoSpriteCargado = false;
+    imagenObjeto.onload = () => {
+      objetoSpriteCargado = true;
+    };
+
+```
+
+**E inserta la carga de la textura de peligro justo debajo:**
 
 ```javascript
     // 💀 4. Sprite para los Obstáculos de Daño (Espinas/Peligro)
     const imagenPeligro = new Image();
-    imagenPeligro.src = "./src/assets/plataformas/metal-espinas.png"; // Asegúrate de tener este asset o uno similar
+    imagenPeligro.src = "./src/assets/obstaculos/pinchos-3.png"; 
     let peligroSpriteCargado = false;
     imagenPeligro.onload = () => {
       peligroSpriteCargado = true;
@@ -57,20 +79,27 @@ Busca el lugar dentro de tu `useEffect` donde se cargan los sprites (debajo de `
 
 ---
 
-### Paso 3: Identificar un Obstáculo como "Dañino"
+### Paso 3: Configurar una Plataforma como "Dañina"
 
-Vamos a transformar uno o más obstáculos de nuestro mapa para que dejen de ser plataformas seguras y se conviertan en trampas letales.
+Vamos a transformar uno de los obstáculos de nuestro mapa para que deje de ser una plataforma segura y se convierta en una trampa letal.
 
-Busca tu array `obstaculos.current` en la parte superior y añade la propiedad `tipo: "danino"` al obstáculo que prefieras. Por ejemplo, transformemos la plataforma 3:
+**Busca el array de objetos `obstaculos` en la parte superior de tu archivo:**
 
 ```javascript
   const obstaculos = useRef([
-    { x: 600, y: 300, ancho: 150, alto: 40, color: rojo },
-    { x: 1000, y: 320, ancho: 200, alto: 30, color: verde },
-    { x: 1500, y: 250, ancho: 120, alto: 30, color: rojo, tipo: "danino" }, // ✨ MODIFICADO DÍA 19: ¡Trampa de espinas!
-    { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta },
-    { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta },
+    { x: 600, y: 300, ancho: 150, alto: 40, color: rojo }, // Plataforma 1 (Roja)
+    { x: 1000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 2 (Verde)
+    { x: 1500, y: 390, ancho: 120, alto: 30, color: rojo }, // Plataforma 3
+    { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 4 (Morada)
+    { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta }, // ¡La plataforma final!
   ]);
+
+```
+
+**Modifica la Plataforma 3 (la que está en `x: 1500`) agregándole la propiedad `tipo: "danino"`:**
+
+```javascript
+    { x: 1500, y: 390, ancho: 120, alto: 30, color: rojo, tipo: "danino" }, // ✨ MODIFICADO DÍA 19: ¡Trampa de espinas!
 
 ```
 
@@ -78,46 +107,76 @@ Busca tu array `obstaculos.current` en la parte superior y añade la propiedad `
 
 ### Paso 4: Actualizar el Reloj de Inmunidad y Detectar el Impacto
 
-Ahora iremos al corazón del motor gráfico dentro de tu `bucleJuego`. Debemos hacer dos cosas: restar tiempo a la inmunidad si está activa y, si no lo está, restarle una vida al jugador al tocar una superficie peligrosa.
+Ahora iremos al corazón matemático de tu juego: el `bucleJuego`. Debemos hacer que el cronómetro reste tiempo a la inmunidad si está activa y, en el detector de choques, restarle una vida si tocamos el tipo "danino".
 
-Coloca este bloque de lógica justo al inicio de la sección donde procesas las colisiones con los obstáculos (`obstaculos.current.forEach((bloque) => { ... })`):
+**Busca la sección dentro del `bucleJuego` que procesa los obstáculos:**
 
 ```javascript
-      // 💀 NUEVO DÍA 19: REFRESCAR CRONÓMETRO DE INMUNIDAD
-      if (invulnerableRef.current) {
-        tiempoInvulnerableRef.current -= 1; // Restamos 1 fotograma por ciclo
-        if (tiempoInvulnerableRef.current <= 0) {
-          invulnerableRef.current = false; // Se acabó el tiempo de seguridad
-        }
-      }
+      // **** 🧱 DETECTOR DE COLISIONES AVANZADO (Sistema de Posiciones Previas)*****/
 
-      // ... (Dentro del bucle de obstáculos, localiza la condición de choque)
-      if (chocando) {
-        // 🔥 NUEVA COMPROBACIÓN DÍA 19: ¿ES UN OBSTÁCULO DAÑINO?
-        if (bloque.tipo === "danino") {
-          if (!invulnerableRef.current) {
-            // 1. Quitar una vida de forma inmediata
-            vidasRef.current -= 1;
-            
-            // 2. Activar protocolo de invulnerabilidad (60 fotogramas = 1 segundo de inmunidad)
-            invulnerableRef.current = true;
-            tiempoInvulnerableRef.current = 60;
+      obstaculos.current.forEach((bloque) => {
+        // Comprobamos la colisión general (¿Se están cruzando sus cajas de límite?)
+        const chocando =
+          gamer.x + gamer.ancho > bloque.x &&
+          gamer.x < bloque.x + bloque.ancho &&
+          gamer.y + gamer.alto > bloque.y &&
+          gamer.y < bloque.y + bloque.alto;
 
-            // 3. Teletransportar al jugador al inicio o hacerlo rebotar
-            gamer.x = 100;
-            gamer.y = 250;
-            gamer.vx = 0;
-            gamer.velocidadY = 0;
+```
 
-            // 4. ¿Se acabaron las vidas? ¡Game Over!
-            if (vidasRef.current <= 0) {
-              cambiarEstadoJuego("GAMEOVER");
-            }
+**E inyecta la reducción del cronómetro y la nueva condición de daño justo así:**
+
+```javascript
+        // 💀 NUEVO DÍA 19: REFRESCAR CRONÓMETRO DE INMUNIDAD
+        if (invulnerableRef.current) {
+          tiempoInvulnerableRef.current -= 1; // Restamos 1 fotograma por ciclo
+          if (tiempoInvulnerableRef.current <= 0) {
+            invulnerableRef.current = false; // Se acabó el tiempo de seguridad
           }
-          return; // Saltamos el resto del cálculo físico para este bloque
         }
 
-        // ... (Aquí continúa intacto el cálculo de traslapes y colisiones normales CASO A, B, C, D)
+        if (chocando) {
+          // Calculamos cuánto se metió el jugador dentro del bloque en cada eje (Traslapes)
+          const traslapeX = Math.min(
+            gamer.x + gamer.ancho - bloque.x,
+            bloque.x + bloque.ancho - gamer.x,
+          );
+          const traslapeY = Math.min(
+            gamer.y + gamer.alto - bloque.y,
+            bloque.y + bloque.alto - gamer.y,
+          );
+
+          // 🕒 POSICIONES PREVIAS: Calculamos dónde estaba el jugador en el fotograma anterior
+          const prevX = gamer.x - gamer.vx;
+          const prevY = gamer.y - gamer.velocidadY;
+          const EPS = 4; // Margen de tolerancia física en píxeles (Evita fallos en esquinas)
+
+          // 🔥 NUEVA COMPROBACIÓN DÍA 19: ¿ES UN OBSTÁCULO DAÑINO?
+          if (bloque.tipo === "danino") {
+            if (!invulnerableRef.current) {
+              // 1. Quitar una vida de forma inmediata
+              vidasRef.current -= 1;
+
+              // 2. Activar protocolo de invulnerabilidad (60 fotogramas = 1 segundo de inmunidad)
+              invulnerableRef.current = true;
+              tiempoInvulnerableRef.current = 60;
+
+              // 3. Teletransportar al jugador de vuelta a una zona segura de salida
+              gamer.x = 100;
+              gamer.y = 250;
+              gamer.vx = 0;
+              gamer.velocidadY = 0;
+
+              // 4. ¿Se acabaron las vidas? ¡Game Over!
+              if (vidasRef.current <= 0) {
+                cambiarEstadoJuego("GAMEOVER");
+              }
+            }
+            return; // Saltamos el resto del cálculo físico para este bloque
+          }
+
+          // CASO A) Si en el pasado sus pies estaban arriba del techo: ¡Aterrizaje!
+          // ... (Todo el resto de tus casos A, B, C y D continúan exactamente iguales abajo)
 
 ```
 
@@ -125,13 +184,17 @@ Coloca este bloque de lógica justo al inicio de la sección donde procesas las 
 
 ### Paso 5: Dibujar el Obstáculo Peligroso y el Efecto Parpadeo
 
-Para que el jugador experimente el efecto especial de parpadeo, modificaremos el renderizado de la nave. Si el jugador es invulnerable, solo lo dibujaremos en fotogramas alternos.
+Para que tus alumnos experimenten la emoción visual del daño, modificaremos el renderizado en dos áreas clave del motor gráfico.
 
-**A) Renderizar la trampa con su propia textura:**
-Busca donde dibujas los obstáculos y haz que use la nueva textura si es de tipo dañino:
+**A) Renderizar la trampa en el lienzo:**
+Busca la sección inferior del `bucleJuego` donde dibujas los rectángulos de tus obstáculos (`obstaculos.current.forEach((bloque) => { ... })`).
+
+**Modifica el bloque para que discrimine si es dañino e inyecte la textura cargada:**
 
 ```javascript
-      /* 🧱 ACTUALIZADO DÍA 19: Dibujar Plataformas y Trampas */
+      /* ----------------------------------------------------
+      🧱 ACTUALIZADO DÍA 19: Dibujar Plataformas con Sprites
+      ----------------------------------------------------*/
       obstaculos.current.forEach((bloque) => {
         const bloqueEnPantallaX = bloque.x - camaraX.current;
 
@@ -143,15 +206,26 @@ Busca donde dibujas los obstáculos y haz que use la nueva textura si es de tipo
           ctx.fillStyle = bloque.color;
           ctx.fillRect(bloqueEnPantallaX, bloque.y, bloque.ancho, bloque.alto);
         }
-        // ... (Tu borde decorativo sutil strokeRect se mantiene)
+
+        if (bloque.tipo !== "danino") {
+          // El borde decorativo sutil solo se aplica a plataformas normales
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(bloqueEnPantallaX, bloque.y, bloque.ancho, bloque.alto);
+        }
+      });
 
 ```
 
-**B) Renderizar el parpadeo de la nave:**
-Ubica la sección al final del bucle donde dibujas al jugador (`ctx.drawImage(imagenJugador, ... )`) y envuélvelo en esta condición de parpadeo matemático:
+**B) Renderizar el efecto parpadeo de la nave:**
+Ubica la sección final del `bucleJuego` donde se dibuja al jugador (`ctx.drawImage(imagenJugador, ... )`).
+
+**Reemplaza el dibujo simple por esta condición matemática intermitente:**
 
 ```javascript
-      /* 🚀 ACTUALIZADO DÍA 19: Dibujar Jugador con Efecto de Parpadeo cosmético */
+      /* ----------------------------------------------------
+       🚀🚀 ACTUALIZADO DÍA 19: Dibujar Jugador con Efecto de Parpadeo cosmético
+      ----------------------------------------------------*/
       const jugadorEnPantallaX = gamer.x - camaraX.current;
 
       // Usamos el residuo del tiempo transcurrido para dibujar al jugador intercaladamente
@@ -174,18 +248,25 @@ Ubica la sección al final del bucle donde dibujas al jugador (`ctx.drawImage(im
 
 ---
 
-### Paso 6: Dibujar el Marcador de Vidas en Pantalla
+### Paso 6: Dibujar el Marcador de Vidas en la Pantalla
 
-No podemos dejar a nuestro astronauta a ciegas. Imprimiremos corazones o un contador de vidas al lado de la puntuación acumulada.
+Para que el piloto sepa en todo momento cuánta salud le queda, imprimiremos corazones espaciales al lado del puntaje de cristales.
 
-Busca donde dibujas el texto de los puntos (`ctx.fillText("💎 " + puntosRef.current, 50, 50);`) y añade la visualización de la salud:
+**Busca las líneas donde imprimes el texto de los puntos (`💎`):**
 
 ```javascript
-      /* 📊 MODIFICADO DÍA 19: Interfaz de Estadísticas en Tiempo Real */
+      /* ----------------------------------------------------
+       👇 Texto
+      ----------------------------------------------------*/
       ctx.fillStyle = "#ffffff";
       ctx.font = "20px sans-serif";
       ctx.fillText("💎 " + puntosRef.current, 50, 50);
-      
+
+```
+
+**E inyecta la visualización de la salud inmediatamente abajo:**
+
+```javascript
       // Dibujamos las vidas restantes usando íconos de corazones texturizados
       const corazones = "❤️".repeat(vidasRef.current);
       ctx.fillText(corazones || "💀", 50, 80);
@@ -194,16 +275,29 @@ Busca donde dibujas el texto de los puntos (`ctx.fillText("💎 " + puntosRef.cu
 
 ---
 
-### Paso 7: Sincronizar el Reinicio del Juego
+### Paso 7: Sincronizar el Reinicio Completo
 
-Por último, debemos asegurar que cuando el jugador presione "Reintentar Misión" en la pantalla de Game Over o "Volver a Jugar" en la de Victoria, sus 3 vidas se restauren por completo y la inmunidad se limpie de la memoria.
+Por último, debemos asegurar que cuando el jugador haga clic en "Reintentar Misión" o "Volver a Jugar", sus 3 vidas se restauren por completo y la inmunidad se limpie de la memoria física.
 
-Busca tu función externa `reiniciarJuego` y añade la restauración de las vidas:
+**Busca la función externa `reiniciarJuego` al final de tu lógica de JavaScript:**
 
 ```javascript
   const reiniciarJuego = () => {
-    // ... (Posiciones iniciales del jugador y reseteo de cristales coleccionables intactos)
+    jugador.current.x = 100;
+    jugador.current.y = 250;
+    jugador.current.vx = 0;
+    jugador.current.velocidadY = 0;
+    jugador.current.saltando = false;
+    jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
     
+    puntosRef.current = 0;
+    objeto.current = [ ... ]; // Tu array de cristales reestablecidos
+
+```
+
+**E inyecta la restauración de la salud justo antes de cambiar el estado a `"JUGANDO"`:**
+
+```javascript
     // 💀 NUEVO DÍA 19: RESTAURAR PARÁMETROS DE SALUD
     vidasRef.current = 3;
     invulnerableRef.current = false;
@@ -220,22 +314,22 @@ Busca tu función externa `reiniciarJuego` y añade la restauración de las vida
 
 ## 🧪 ¡Prueba tu Sistema de Daño!
 
-1. Guarda los cambios de tu componente y abre tu navegador.
-2. Inicia la misión. Avanza con destreza por el espacio hasta encontrar la plataforma de peligro designada.
-3. **¿Resultado esperado?** Al tocarla, tu nave debe regresar inmediatamente al puerto de salida, el marcador de corazones bajará a `❤️❤️` y verás a tu personaje parpadear de forma espectacular durante un segundo completo.
-4. Intenta tocar el obstáculo dañino repetidamente. Al perder el tercer corazón, el juego debe detenerse en seco por completo y desplegar limpiamente la pantalla roja de **MISIÓN FALLIDA**.
-5. Presiona **Reintentar Misión** y comprueba cómo el universo entero se regenera con tus 3 vidas intactas.
+1. Guarda los cambios de tu archivo y abre tu navegador.
+2. Inicia la misión desde el menú principal. Avanza con destreza recolectando cristales hasta encontrar la plataforma de peligro designada.
+3. **¿Resultado esperado?** Al rozar los pinchos metálicos, tu nave regresará instantáneamente al punto de salida seguro, el marcador de salud bajará a `❤️❤️` y verás a tu personaje parpadear de forma espectacular durante un segundo completo.
+4. Intenta tocar el peligro repetidamente. Al perder el tercer corazón, el juego se detendrá por completo y desplegará limpiamente la pantalla roja de **MISIÓN FALLIDA**.
+5. Haz clic en **Reintentar Misión** y comprueba cómo el universo entero se regenera con tus 3 vidas intactas.
 
 ---
 
 # 🎯 Reto Coder GoCoder del Día 19: Diseñador de Trampas Impredecibles
 
-¡Absolutamente espectacular! Tu software ha dejado de ser un simple Canvas interactivo para convertirse en una mecánica jugable robusta y competitiva.
+¡Absolutamente espectacular! Tu software ha dejado de ser un simple Canvas interactivo para convertirse en una mecánica de supervivencia jugable, robusta y competitiva.
 
 ### Tus tareas de hoy:
 
-1. **Campos de Minas Espaciales:** Modifica las dimensiones o posiciones de tu plataforma dañina para colocarla en un punto estratégico que obligue al jugador a calcular milimétricamente el ángulo de su salto.
-2. **Personalización del Indicador:** Si no quieres usar corazones tradicionales, cambia el string de texto `"❤️"` por un indicador de escudo tecnológico como `"🛡️"` o barras de energía dinámicas (`"⚡⚡⚡"`).
+1. **Campos de Minas Espaciales:** Modifica las dimensiones o las coordenadas `x` e `y` de tu plataforma dañina para colocarla en un punto estratégico que obligue al jugador a calcular milimétricamente el ángulo de su salto.
+2. **Personalización del Indicador:** Si no quieres usar corazones tradicionales, cambia el string de texto `"❤️"` en tu comando `ctx.fillText` por un indicador de escudo tecnológico como `"🛡️"` o barras de energía dinámicas (`"⚡⚡⚡"`).
 
 ### 🧠 Pregunta para pensar de ingenieros de software:
 

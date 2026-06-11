@@ -2,7 +2,7 @@
 
 **¡Bienvenidos al Día 18, goCoders!** Ya tenemos un universo hermoso, plataformas metálicas y valiosos cristales flotantes que recolectar. Pero el espacio exterior no es del todo pacífico... ¡Hoy descubriremos cómo programar nuestros primeros peligros móviles!
 
-Aprenderemos a crear **Enemigos Patrulleros**. Estos objetos no se quedarán quietos esperando; tendrán su propia "miniprogramación" para caminar de izquierda a derecha de forma autónoma. Si te descuidas y chocas con uno, tu nave perderá el equilibrio y el nivel se reiniciará.
+Aprenderemos a crear **Enemigos Patrulleros**. Estos objetos no se quedarán quietos esperando; tendrán su propia "miniprogramación" para caminar de izquierda a derecha de forma autónoma. Si te descuidas y chocas con uno, tu jugador perderá el equilibrio y el nivel se reiniciará.
 
 ---
 
@@ -37,7 +37,7 @@ Agrega este bloque justo **debajo** de tu referencia de `objeto`:
 
 ```javascript
 /**************************************
-    🛸 NUEVO DÍA 18: ENEMIGOS PATRULLEROS
+    🛸 EXTRA NUEVO DÍA 20: ENEMIGOS PATRULLEROS
   ************************************* */
 const enemigos = useRef([
   {
@@ -72,13 +72,13 @@ Para evitar errores de orden en JavaScript, vamos a mover nuestra función reini
 Corta tu función reiniciarJuego de donde estaba abajo y colócala en esta nueva posición estratégica modificada de la siguiente manera:
 
 ```JavaScript
-  // ... (Justo debajo de la referencia de enemigos)
-
-  /**************************************
-    🔄 ACTUALIZADO DÍA 18: REINICIO SEGURO EN MEMORIA
-  ************************************* */
-  const reiniciarJuego = () => {
-    // 1. Regresamos al jugador a su posición inicial
+  // ... (Justo debajo de la referencia de enemigos) arriba del useEffect
+const reiniciarJuego = () => {
+    // 1. Restablecer el contador de vidas e inmunidad por completo
+    vidasRef.current = 3;
+    invulnerableRef.current = false;
+    tiempoInvulnerableRef.current = 0;
+    // 2. Regresamos al jugador a su posición inicial segura de forma instantánea
     jugador.current.x = 100;
     jugador.current.y = 250;
     jugador.current.vx = 0;
@@ -86,29 +86,51 @@ Corta tu función reiniciarJuego de donde estaba abajo y colócala en esta nueva
     jugador.current.saltando = false;
     jugador.current.y = ALTO_LOGICO - jugador.current.alto - CALIBRACION_SUELO;
 
-    // 2. Resetear objetos coleccionables y marcador
+    // 3. Resetear el marcador a cero
     puntosRef.current = 0;
+    // 4. Regenerar el mapa completo de obstáculos (Para que vuelvan a aparecer)
+    obstaculos.current = [
+      { x: 600, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 1 (Roja)
+      { x: 750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 1000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 2 (Verde)
+      { x: 1200, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 1400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 3 (Amarilla)
+      { x: 1600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 4 (Amarilla)
+      { x: 1700, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 5 (Morada)
+      { x: 2250, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta }, // ¡La plataforma 6!
+      { x: 2800, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 7 (Roja)
+      { x: 3000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 8 (Verde)
+      { x: 3400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 9 (Amarilla)
+      { x: 3600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 10 (Amarilla)
+      { x: 3650, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 4000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 11 (Morada)
+    ];
+    // 5. Regenerar todos los cristales coleccionables del mapa
     objeto.current = [
-      { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
-      { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
-      { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
-      { x: 1550, y: 170, ancho: 50, alto: 50, color: amarillo },
+      { x: 450, y: 220, ancho: 50, alto: 50, color: amarillo },
+      { x: 865, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+      { x: 1240, y: 200, ancho: 50, alto: 50, color: amarillo },
+      { x: 1280, y: 200, ancho: 50, alto: 50, color: amarillo },
+      { x: 1320, y: 200, ancho: 50, alto: 50, color: amarillo },
+      { x: 1540, y: 80, ancho: 50, alto: 50, color: amarillo },
+      { x: 1580, y: 80, ancho: 50, alto: 50, color: amarillo },
+      { x: 1620, y: 80, ancho: 50, alto: 50, color: amarillo },
       { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
       { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
       { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
     ];
-
-    // 🛸 3. NUEVO DÍA 18: RESETEAR POSICIÓN DE ENEMIGOS
+    // 🛸 EXTRA. NUEVO DÍA 20: RESETEAR POSICIÓN DE ENEMIGOS
     enemigos.current.forEach((enemigo) => {
       enemigo.x = enemigo.inicioX;
       // Restablecemos velocidades originales (positiva para el primero, negativa para el segundo)
       enemigo.velocidadX = enemigo.inicioX === 950 ? 2 : -2.5;
     });
-
-    // 4. Apagamos los interruptores de victoria
+    // 6. Liberar los cerrojos de estado y regresar a la acción
     juegoGanadoRef.current = false;
-    setJuegoGanado(false);
+    cambiarEstadoJuego("JUGANDO");
+    // Si quieres, también puedes reestablecer meta y obstaculos si cambia algo
   };
 
   // ... (Aquí abajo continúa tu useEffect original de forma intacta)
@@ -130,78 +152,80 @@ imagenEnemigo.onload = () => {
   enemigoSpriteCargado = true;
 };
 ```
-
-> 💡 **Nota de Emergencia:** Si no tienes una imagen lista en tu computadora, puedes usar temporalmente este enlace en el `.src`:
-> `"https://imgbb.com/T0bX66Y/alien-red.png"`
-
 ---
 
 ### Paso 4: El Motor de Movimiento y Colisión de Enemigos
 
-Ahora entremos al corazón del juego: el `bucleJuego` dentro de tu `useEffect`. Justo **debajo** de donde termina la lógica y el dibujo de los cristales (`objeto.current.forEach`), vamos a inyectar el ciclo inteligente de los enemigos.
+Ahora entremos al corazón del juego: el `bucleJuego` dentro de tu `useEffect`. Justo **debajo** de donde termina la lógica y el dibujo de los objetos (`objeto.current.forEach`), vamos a inyectar el ciclo inteligente de los enemigos.
 
 Añade este bloque compacto:
 
 ```javascript
 /* ----------------------------------------------------
-      🛸 NUEVO DÍA 18: INTELIGENCIA Y DAÑO DE ENEMIGOS
+      🛸 EXTRA NUEVO DÍA 20: INTELIGENCIA Y DAÑO DE ENEMIGOS
       ----------------------------------------------------*/
-enemigos.current.forEach((enemigo) => {
-  // A. Movimiento Automático: El enemigo camina solo
-  enemigo.x += enemigo.velocidadX;
+      enemigos.current.forEach((enemigo) => {
+        // A. Movimiento Automático: El enemigo se desplaza solo
+        enemigo.x += enemigo.velocidadX;
 
-  // B. Sensor de Giro: Si se aleja mucho de su punto de inicio, ¡se da la vuelta!
-  if (enemigo.x > enemigo.inicioX + enemigo.rangoPatrulla) {
-    enemigo.velocidadX = -Math.abs(enemigo.velocidadX); // Va a la izquierda
-  } else if (enemigo.x < enemigo.inicioX) {
-    enemigo.velocidadX = Math.abs(enemigo.velocidadX); // Va a la derecha
-  }
+        // B. Sensor de Giro: Si se aleja mucho de su punto de inicio, ¡se da la vuelta!
+        if (enemigo.x > enemigo.inicioX + enemigo.rangoPatrulla) {
+          enemigo.velocidadX = -Math.abs(enemigo.velocidadX); // Cambia sentido a la izquierda
+        } else if (enemigo.x < enemigo.inicioX) {
+          enemigo.velocidadX = Math.abs(enemigo.velocidadX); // Cambia sentido a la derecha
+        }
 
-  // C. Detector de Colisión de Daño con la Nave
-  const chocandoConNave =
-    gamer.x + gamer.ancho > enemigo.x &&
-    gamer.x < enemigo.x + enemigo.ancho &&
-    gamer.y + gamer.alto > enemigo.y &&
-    gamer.y < enemigo.y + enemigo.alto;
+        // C. Detector de Colisión de Daño con la Nave
+        const chocandoConNave =
+          gamer.x + gamer.ancho > enemigo.x &&
+          gamer.x < enemigo.x + enemigo.ancho &&
+          gamer.y + gamer.alto > enemigo.y &&
+          gamer.y < enemigo.y + enemigo.alto;
 
-  if (chocandoConNave) {
-    // ¡Boom! Al chocar con un peligro, penalizamos al jugador reiniciando su posición
-    reiniciarJuego();
-  }
+        if (chocandoConNave) {
+          // 🛡️ Solo aplicamos daño si NO somos invulnerables en este fotograma
+          if (!invulnerableRef.current) {
+            // 1. Descontamos una vida de manera inmediata
+            vidasRef.current -= 1;
 
-  // D. Dibujar al Enemigo en Pantalla usando la Cámara Móvil
-  const enemigoEnPantallaX = enemigo.x - camaraX.current;
+            // 2. Encendemos el escudo de inmunidad (60 fotogramas = 1 segundo de seguridad)
+            invulnerableRef.current = true;
+            tiempoInvulnerableRef.current = 60;
 
-  if (enemigoSpriteCargado) {
-    ctx.drawImage(
-      imagenEnemigo,
-      enemigoEnPantallaX,
-      enemigo.y,
-      enemigo.ancho,
-      enemigo.alto,
-    );
-  } else {
-    ctx.fillStyle = enemigo.color;
-    ctx.fillRect(enemigoEnPantallaX, enemigo.y, enemigo.ancho, enemigo.alto);
-  }
-});
-```
+            // 3. Teletransportamos al astronauta a la base segura de inicio para evitar muertes instantáneas
+            gamer.x = 100;
+            gamer.y = 250;
+            gamer.vx = 0;
+            gamer.velocidadY = 0;
 
----
+            // 4. Si los corazones llegan a cero... ¡Fin de la simulación!
+            if (vidasRef.current <= 0) {
+              cambiarEstadoJuego("GAMEOVER");
+            }
+          }
+        }
 
-### Paso 5: Resetear las Patrullas al Reiniciar el Juego
+        // D. Dibujar al Enemigo en Pantalla usando la Cámara Móvil
+        const enemigoEnPantallaX = enemigo.x - camaraX.current;
 
-Si un enemigo se quedó a mitad de su caminata cuando perdiste, ¡queremos que regrese a su posición original al iniciar una nueva partida! Ve a la función `reiniciarJuego` (que está afuera del `useEffect`).
-
-Agrega esta restauración al final de la función, justo antes de cerrar la llave de `reiniciarJuego`:
-
-```javascript
-// 🛸 NUEVO DÍA 18: RESETEAR POSICIÓN DE ENEMIGOS
-enemigos.current.forEach((enemigo) => {
-  enemigo.x = enemigo.inicioX;
-  // Restablecemos velocidades originales (positiva para el primero, negativa para el segundo)
-  enemigo.velocidadX = enemigo.inicioX === 950 ? 2 : -2.5;
-});
+        if (enemigoSpriteCargado) {
+          ctx.drawImage(
+            imagenEnemigo,
+            enemigoEnPantallaX,
+            enemigo.y,
+            enemigo.ancho,
+            enemigo.alto,
+          );
+        } else {
+          ctx.fillStyle = enemigo.color;
+          ctx.fillRect(
+            enemigoEnPantallaX,
+            enemigo.y,
+            enemigo.ancho,
+            enemigo.alto,
+          );
+        }
+      });
 ```
 
 ---
