@@ -1,3 +1,12 @@
+import imageFondo from "../assets/bg-seis.png";
+import imageJugador from "../assets/astro-4.png";
+import imagePlataform from "../assets/metal-4.jpg";
+import imageObjeto from "../assets/estrella-1.png";
+import imageBonus from "../assets/cristal-5.png";
+import imageObstaculo from "../assets/pinchos-1.png";
+import imageMeta from "../assets/meta-1.png";
+import imageEnemigo from "../assets/enemigo-1.png";
+
 import { useEffect, useRef, useState } from "react";
 import { resizeCanvas } from "../utils/resizeCanvas";
 import { activarPantallaCompleta } from "../utils/pantallaCompleta";
@@ -247,7 +256,7 @@ function MiJuego() {
 
     const imagenFondo = new Image();
     // Le damos la dirección de internet de la foto
-    imagenFondo.src = "/assets/bg-seis.png";
+    imagenFondo.src = imageFondo;
     // imagenFondo.src =
     //   "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=800&auto=format&fit=crop";
 
@@ -260,44 +269,44 @@ function MiJuego() {
     ************************************* */
     // 1. Sprite de la Nave del Jugador
     const imagenJugador = new Image();
-    imagenJugador.src = "/assets/astro-4.png";
+    imagenJugador.src = imageJugador;
     let jugadorSpriteCargado = false;
     imagenJugador.onload = () => {
       jugadorSpriteCargado = true;
     };
     // 2. Sprite de Textura para las Plataformas
     const imagenPlataforma = new Image();
-    imagenPlataforma.src = "/assets/metal-4.jpg";
+    imagenPlataforma.src = imagePlataform;
     let plataformaSpriteCargado = false;
     imagenPlataforma.onload = () => {
       plataformaSpriteCargado = true;
     };
     // 💎 3. Sprite para los objetos Coleccionables
     const imagenObjeto = new Image();
-    imagenObjeto.src = "/assets/estrella-1.png";
+    imagenObjeto.src = imageObjeto;
     const imagenObjetoBonus = new Image();
-    imagenObjetoBonus.src = "/assets/cristal-5.png";
+    imagenObjetoBonus.src = imageBonus;
     let objetoSpriteCargado = false;
     imagenObjeto.onload = () => {
       objetoSpriteCargado = true;
     };
     // 💀 4. Sprite para los Obstáculos de Daño (Espinas/Peligro)
     const imagenPeligro = new Image();
-    imagenPeligro.src = "/assets/pinchos-1.png"; // Asegúrate de tener esta imagen o cámbiala por algo que tengas
+    imagenPeligro.src = imageObstaculo;
     let peligroSpriteCargado = false;
     imagenPeligro.onload = () => {
       peligroSpriteCargado = true;
     };
     // 🏁 5. Sprite para la Meta Final
     const imagenMetaSprite = new Image();
-    imagenMetaSprite.src = "/assets/meta-1.png"; // <-- Asegúrate de que esta ruta sea correcta
+    imagenMetaSprite.src = imageMeta;
     let metaImagenCargada = false;
     imagenMetaSprite.onload = () => {
       metaImagenCargada = true;
     };
     // 🛸 EXTRA. Sprite para los Enemigos Cósmicos
     const imagenEnemigo = new Image();
-    imagenEnemigo.src = "/assets/enemigo-1.png";
+    imagenEnemigo.src = imageEnemigo;
     let enemigoSpriteCargado = false;
     imagenEnemigo.onload = () => {
       enemigoSpriteCargado = true;
