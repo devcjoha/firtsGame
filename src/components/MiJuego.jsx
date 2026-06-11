@@ -15,16 +15,8 @@ import {
   verde,
   violeta,
   cyan,
-  azul
+  azul,
 } from "../colors/colors";
-import fondo from "../assets/bg-seis.png";
-import jugadorImg from "../assets/astro-4.png";
-import plataformaImg from "../assets/metal-4.jpg";
-import objetoImg from "../assets/estrella-1.png";
-import objetoBonusImg from "../assets/cristal-5.png";
-import peligroImg from "../assets/pinchos-1.png";
-import metaImg from "../assets/meta-1.png";
-import enemigoImg from "../assets/enemigo-1.png";
 
 function MiJuego() {
   const canvasRef = useRef(null);
@@ -104,7 +96,7 @@ function MiJuego() {
     { x: 2900, y: 320, ancho: 80, alto: 30, color: rojo }, // Plataforma 7 (Roja)
     { x: 3100, y: 320, ancho: 80, alto: 30, color: verde }, // Plataforma 8 (Verde)
     { x: 3300, y: 320, ancho: 80, alto: 30, color: azul }, // Plataforma 9 (azul)
-    
+
     { x: 3400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 10 (Amarilla)
     { x: 3650, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 11 (Amarilla)
 
@@ -255,7 +247,7 @@ function MiJuego() {
 
     const imagenFondo = new Image();
     // Le damos la dirección de internet de la foto
-    imagenFondo.src = fondo;
+    imagenFondo.src = "/assets/bg-seis.png";
     // imagenFondo.src =
     //   "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=800&auto=format&fit=crop";
 
@@ -268,45 +260,44 @@ function MiJuego() {
     ************************************* */
     // 1. Sprite de la Nave del Jugador
     const imagenJugador = new Image();
-    imagenJugador.src = jugadorImg;
+    imagenJugador.src = "/assets/astro-4.png";
     let jugadorSpriteCargado = false;
     imagenJugador.onload = () => {
       jugadorSpriteCargado = true;
     };
-
     // 2. Sprite de Textura para las Plataformas
     const imagenPlataforma = new Image();
-    imagenPlataforma.src = plataformaImg;
+    imagenPlataforma.src = "/assets/metal-4.jpg";
     let plataformaSpriteCargado = false;
     imagenPlataforma.onload = () => {
       plataformaSpriteCargado = true;
     };
     // 💎 3. Sprite para los objetos Coleccionables
     const imagenObjeto = new Image();
-    imagenObjeto.src = objetoImg;
+    imagenObjeto.src = "/assets/estrella-1.png";
     const imagenObjetoBonus = new Image();
-    imagenObjetoBonus.src = objetoBonusImg;
+    imagenObjetoBonus.src = "/assets/cristal-5.png";
     let objetoSpriteCargado = false;
     imagenObjeto.onload = () => {
       objetoSpriteCargado = true;
     };
     // 💀 4. Sprite para los Obstáculos de Daño (Espinas/Peligro)
     const imagenPeligro = new Image();
-    imagenPeligro.src = peligroImg; // Asegúrate de tener esta imagen o cámbiala por algo que tengas
+    imagenPeligro.src = "/assets/pinchos-1.png"; // Asegúrate de tener esta imagen o cámbiala por algo que tengas
     let peligroSpriteCargado = false;
     imagenPeligro.onload = () => {
       peligroSpriteCargado = true;
     };
     // 🏁 5. Sprite para la Meta Final
     const imagenMetaSprite = new Image();
-    imagenMetaSprite.src = metaImg; // <-- Asegúrate de que esta ruta sea correcta
+    imagenMetaSprite.src = "/assets/meta-1.png"; // <-- Asegúrate de que esta ruta sea correcta
     let metaImagenCargada = false;
     imagenMetaSprite.onload = () => {
       metaImagenCargada = true;
     };
     // 🛸 EXTRA. Sprite para los Enemigos Cósmicos
     const imagenEnemigo = new Image();
-    imagenEnemigo.src = enemigoImg;
+    imagenEnemigo.src = "/assets/enemigo-1.png";
     let enemigoSpriteCargado = false;
     imagenEnemigo.onload = () => {
       enemigoSpriteCargado = true;
@@ -645,7 +636,7 @@ function MiJuego() {
           ctx.fillRect(objetoEnPantallaX, objeto.y, objeto.ancho, objeto.alto);
         }
       });
-/* ----------------------------------------------------
+      /* ----------------------------------------------------
       🛸 EXTRA NUEVO DÍA 20: INTELIGENCIA Y DAÑO DE ENEMIGOS
       ----------------------------------------------------*/
       enemigos.current.forEach((enemigo) => {
@@ -710,7 +701,7 @@ function MiJuego() {
           );
         }
       });
-      
+
       /* ----------------------------------------------------
       🏁 NUEVO DÍA 15: RENDERIZAR LA META EN EL CANVAS
       ----------------------------------------------------*/
@@ -845,7 +836,6 @@ function MiJuego() {
       // 👇 Y el radar de pantalla completa
       document.removeEventListener("fullscreenchange", manejarCambioFullscreen);
     };
-
   }, []); // 🌟 Dejamos el array vacío para que el motor sea ultra estable y eficiente
 
   /**************************************
