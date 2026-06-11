@@ -11,7 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
-
+# Ocultar guías de clase y retos de los alumnos
+/guia-profesor
+/instrucciones
+# Ocultar componentes completos
+/completos
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
