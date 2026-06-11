@@ -209,17 +209,18 @@ function MiJuego() {
     ];
     // 5. Regenerar todos los cristales coleccionables del mapa
     objeto.current = [
-      { x: 450, y: 220, ancho: 50, alto: 50, color: amarillo },
-      { x: 865, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
-      { x: 1240, y: 200, ancho: 50, alto: 50, color: amarillo },
-      { x: 1280, y: 200, ancho: 50, alto: 50, color: amarillo },
-      { x: 1320, y: 200, ancho: 50, alto: 50, color: amarillo },
-      { x: 1540, y: 80, ancho: 50, alto: 50, color: amarillo },
-      { x: 1580, y: 80, ancho: 50, alto: 50, color: amarillo },
-      { x: 1620, y: 80, ancho: 50, alto: 50, color: amarillo },
+      { x: 650, y: 220, ancho: 50, alto: 50, color: amarillo },
+      { x: 800, y: 30, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
+      { x: 1050, y: 240, ancho: 50, alto: 50, color: amarillo },
+      { x: 1120, y: 240, ancho: 50, alto: 50, color: amarillo },
+      { x: 1430, y: 170, ancho: 50, alto: 50, color: amarillo },
+      { x: 1630, y: 80, ancho: 50, alto: 50, color: amarillo },
       { x: 2050, y: 90, ancho: 70, alto: 70, color: cyan, tipo: "bonus" },
       { x: 2550, y: 120, ancho: 50, alto: 50, color: amarillo },
       { x: 2650, y: 120, ancho: 50, alto: 50, color: amarillo },
+      { x: 3430, y: 150, ancho: 50, alto: 50, color: amarillo }, // Plataforma 9 (Amarilla)
+      { x: 3680, y: 80, ancho: 50, alto: 50, color: amarillo }, // Plataforma 10 (Amarilla)
+      { x: 4050, y: 60, ancho: 70, alto: 70, color: cyan, tipo: "bonus" }, // ✨ Plataforma 1.5
     ];
     // 🛸 EXTRA. NUEVO DÍA 18: RESETEAR POSICIÓN DE ENEMIGOS
     enemigos.current.forEach((enemigo) => {
