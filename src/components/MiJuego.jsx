@@ -1,3 +1,10 @@
+import sonidoLoop from "../assets/loop-2.mp3";
+import sonidoSalto from "../assets/salto-1.mp3";
+import sonidoCollect from "../assets/collect-2.mp3";
+import sonidoFail from "../assets/fail-1.mp3";
+import sonidoGameOver from "../assets/game-over.mp3";
+import sonidoVictoria from "../assets/victoria-1.mp3";
+
 import imageFondo from "../assets/bg-seis.png";
 import imageJugador from "../assets/astro-4.png";
 import imagePlataform from "../assets/metal-4.jpg";
@@ -16,6 +23,8 @@ import {
   ArrowUp,
   Maximize2,
   Minimize2,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import {
   amarillo,
@@ -33,6 +42,28 @@ function MiJuego() {
   const contenedorRef = useRef(null);
   const puntosRef = useRef(0);
 
+  // 🎵 REFERENCIAS DE AUDIO CON PRECARGA (EVITA EL RETRASO)
+  const audioLoop = useRef(
+    Object.assign(new Audio(sonidoLoop), { preload: "auto" }),
+  );
+  const audioSalto = useRef(
+    Object.assign(new Audio(sonidoSalto), { preload: "auto" }),
+  );
+  const audioCollect = useRef(
+    Object.assign(new Audio(sonidoCollect), { preload: "auto" }),
+  );
+  const audioFail = useRef(
+    Object.assign(new Audio(sonidoFail), { preload: "auto" }),
+  );
+  const audioGameOver = useRef(
+    Object.assign(new Audio(sonidoGameOver), { preload: "auto" }),
+  );
+  const audioVictoria = useRef(
+    Object.assign(new Audio(sonidoVictoria), { preload: "auto" }),
+  );
+  // 🔇 CONTROL FLOTANTE DE SILENCIO (MUTE)
+  const [sonidoActivo, setSonidoActivo] = useState(true);
+  const sonidoActivoRef = useRef(true);
   // 💀 NUEVO DÍA 19: CONTROL DE VIDAS E INMUNIDAD
   const vidasRef = useRef(3);
   const invulnerableRef = useRef(false);
@@ -57,10 +88,85 @@ function MiJuego() {
   const [estadoJuego, setEstadoJuego] = useState("MENU");
   const estadoJuegoRef = useRef("MENU");
 
+  // 🎵 FUNCIÓN COMPATIBLE CON MÓVIL PARA ALTERNAR SONIDO
+  const alternarSonido = (e) => {
+    if (e) e.preventDefault(); // Evita errores de doble toque en pantallas táctiles
+
+    const nuevoEstado = !sonidoActivoRef.current;
+    sonidoActivoRef.current = nuevoEstado;
+    setSonidoActivo(nuevoEstado);
+
+    // Si el jugador decide silenciar, pausamos la música de fondo inmediatamente
+    if (!nuevoEstado) {
+      audioLoop.current.pause();
+    } else {
+      // Si activa el sonido y ya está jugando, reanudamos la música cósmica
+      if (estadoJuegoRef.current === "JUGANDO") {
+        audioLoop.current.play().catch(() => {});
+      }
+    }
+  };
+
   const cambiarEstadoJuego = (nuevoEstado) => {
     estadoJuegoRef.current = nuevoEstado;
     setEstadoJuego(nuevoEstado);
+    // 📱 DESBLOQUEADOR DE AUDIO EN MÓVILES
+    if (nuevoEstado === "JUGANDO") {
+      const audios = [
+        audioLoop.current,
+        audioSalto.current,
+        audioCollect.current,
+        audioFail.current,
+        audioGameOver.current,
+        audioVictoria.current,
+      ];
+
+      // Los reproducimos y pausamos al instante en el primer toque. Esto da permiso al celular.
+      audios.forEach((audio) => {
+        audio
+          .play()
+          .then(() => {
+            if (audio !== audioLoop.current) {
+              audio.pause();
+              audio.currentTime = 0;
+            }
+          })
+          .catch((e) => console.log("Audio esperando interacción:", e));
+      });
+
+      // 🎵 CONTROLADOR AUTOMÁTICO DE MÚSICA DE FONDO
+      audioLoop.current.loop = true;
+      audioLoop.current.volume = 0.4; // Volumen al 40% para no aturdir
+
+      // Solo suena si el interruptor está encendido
+      if (sonidoActivoRef.current) {
+        audioLoop.current.play().catch(() => {});
+      }
+
+      // Asegurarnos de apagar los audios de pantallas finales
+      audioGameOver.current.pause();
+      audioVictoria.current.pause();
+    } else if (nuevoEstado === "GAMEOVER") {
+      audioLoop.current.pause();
+      audioLoop.current.currentTime = 0;
+      audioGameOver.current.currentTime = 0;
+
+      // Sonido catastrófico de derrota si el sonido está activo
+      if (sonidoActivoRef.current) {
+        audioGameOver.current.play().catch(() => {});
+      }
+    } else if (nuevoEstado === "VICTORIA") {
+      audioLoop.current.pause();
+      audioLoop.current.currentTime = 0;
+      audioVictoria.current.currentTime = 0;
+
+      // Música gloriosa de campeones si el sonido está activo
+      if (sonidoActivoRef.current) {
+        audioVictoria.current.play().catch(() => {});
+      }
+    }
   };
+
   const juegoGanadoRef = useRef(false);
 
   const meta = useRef({
@@ -191,21 +297,25 @@ function MiJuego() {
     // 4. Regenerar el mapa completo de obstáculos (Para que vuelvan a aparecer)
     obstaculos.current = [
       { x: 600, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 1 (Roja)
-      { x: 750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
       { x: 1000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 2 (Verde)
-      { x: 1200, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 1200, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
       { x: 1400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 3 (Amarilla)
       { x: 1600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 4 (Amarilla)
-      { x: 1700, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 1700, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
       { x: 2000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 5 (Morada)
-      { x: 2250, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
+      { x: 2250, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
       { x: 2500, y: 200, ancho: 250, alto: 30, color: magenta }, // ¡La plataforma 6!
-      { x: 2800, y: 300, ancho: 150, alto: 30, color: rojo }, // Plataforma 7 (Roja)
-      { x: 3000, y: 320, ancho: 200, alto: 30, color: verde }, // Plataforma 8 (Verde)
-      { x: 3400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 9 (Amarilla)
-      { x: 3600, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 10 (Amarilla)
-      { x: 3650, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ Plataforma 1.5 (Trampa de espinas)
-      { x: 4000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 11 (Morada)
+
+      { x: 2900, y: 320, ancho: 80, alto: 30, color: rojo }, // Plataforma 7 (Roja)
+      { x: 3100, y: 320, ancho: 80, alto: 30, color: verde }, // Plataforma 8 (Verde)
+      { x: 3300, y: 320, ancho: 80, alto: 30, color: azul }, // Plataforma 9 (azul)
+
+      { x: 3400, y: 250, ancho: 120, alto: 30, color: amarillo }, // Plataforma 10 (Amarilla)
+      { x: 3650, y: 150, ancho: 120, alto: 30, color: amarillo }, // Plataforma 11 (Amarilla)
+
+      { x: 3750, y: 360, ancho: 250, alto: 80, color: rojo, tipo: "danino" }, // ✨ (Trampa de espinas)
+      { x: 4000, y: 350, ancho: 180, alto: 30, color: violeta }, // Plataforma 12 (Morada)
     ];
     // 5. Regenerar todos los cristales coleccionables del mapa
     objeto.current = [
@@ -421,7 +531,11 @@ function MiJuego() {
             if (!invulnerableRef.current) {
               // 1. Quitar una vida de forma inmediata
               vidasRef.current -= 1;
-
+              // 🔊 ¡Sonido de golpe condicionado!
+              if (sonidoActivoRef.current) {
+                audioFail.current.currentTime = 0;
+                audioFail.current.play().catch(() => {});
+              }
               // 2. Activar protocolo de invulnerabilidad (60 fotogramas = 1 segundo de inmunidad)
               invulnerableRef.current = true;
               tiempoInvulnerableRef.current = 60;
@@ -614,6 +728,11 @@ function MiJuego() {
           gamer.y < objeto.y + objeto.alto;
 
         if (chocandoConObjeto) {
+          // 🔊 ¡Efecto recolectar condicionado!
+          if (sonidoActivoRef.current) {
+            audioCollect.current.currentTime = 0;
+            audioCollect.current.play().catch(() => {});
+          }
           // 🌟 REVISAMOS EL TIPO DE OBJETO PARA DAR EL BOTÍN
           if (objeto.tipo === "bonus") {
             puntosRef.current += 300; // ¡Los bonus dan el triple!
@@ -796,6 +915,11 @@ function MiJuego() {
         (evento.key === " " || evento.key === "ArrowUp") &&
         !jugador.current.saltando
       ) {
+        // 🔊 Si el sonido está activo, activamos los propulsores
+        if (sonidoActivoRef.current) {
+          audioSalto.current.currentTime = 0;
+          audioSalto.current.play().catch(() => {});
+        }
         jugador.current.velocidadY = -15;
         jugador.current.saltando = true;
       }
@@ -817,7 +941,7 @@ function MiJuego() {
     // window.addEventListener("keydown", manejarTeclado);
     window.addEventListener("keydown", manejarKeyDown);
     window.addEventListener("keyup", manejarKeyUp);
-    window.addEventListener("shift", manejarKeyUp);
+    // window.addEventListener("shift", manejarKeyUp);
 
     /**************************************
       💻 FULLSCREEN Escuchador para sincronizar de manera segura el icono del botón pantalla completa 👇
@@ -837,7 +961,7 @@ function MiJuego() {
       // window.removeEventListener("keydown", manejarTeclado);
       window.removeEventListener("keydown", manejarKeyDown);
       window.removeEventListener("keyup", manejarKeyUp);
-      window.removeEventListener("shift", manejarKeyUp);
+      // window.removeEventListener("shift", manejarKeyUp);
 
       // 👇 Apagamos los radares del celular 👇
       window.removeEventListener("resize", manejarResize);
@@ -922,11 +1046,16 @@ function MiJuego() {
           </div>
 
           {/* Bloque Derecho: Botón de Salto Autónomo */}
-          <div className="pointer-events-auto">
+          <div className="pointer-events-auto mr-10 ">
             <button
               onPointerDown={(e) => {
                 e.preventDefault();
                 if (!jugador.current.saltando) {
+                  // 🔊 Efecto de salto en móviles
+                  if (sonidoActivoRef.current) {
+                    audioSalto.current.currentTime = 0;
+                    audioSalto.current.play().catch(() => {});
+                  }
                   jugador.current.velocidadY = -15;
                   jugador.current.saltando = true;
                 }
@@ -960,7 +1089,18 @@ function MiJuego() {
             <Maximize2 size={20} />
           )}
         </button>
-
+        {/* 🔊 BOTÓN DE AUDIO INTELIGENTE (MULTIPLATAFORMA) */}
+        <button
+          onPointerDown={alternarSonido}
+          className="absolute w-10 h-10 z-20 top-4 right-20 bg-black/20 backdrop-blur-md text-white rounded-xl  shadow-lg active:scale-95 hover:bg-slate-800 transition-all flex items-center justify-center cursor-pointer touch-none"
+          aria-label="Alternar sonido"
+        >
+          {sonidoActivo ? (
+            <Volume2 size={20} className="text-emerald-400" />
+          ) : (
+            <VolumeX size={20} className="text-red-400" />
+          )}
+        </button>
         {/* 🏠 INTERFAZ 1: MENÚ DE INICIO DE MISIÓN */}
         {estadoJuego === "MENU" && (
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs flex flex-col items-center justify-center z-30 select-none p-4">
