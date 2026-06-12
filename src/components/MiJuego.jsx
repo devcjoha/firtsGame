@@ -791,7 +791,11 @@ function MiJuego() {
           if (!invulnerableRef.current) {
             // 1. Descontamos una vida de manera inmediata
             vidasRef.current -= 1;
-
+            // 🔊 ¡Sonido de golpe condicionado!
+            if (sonidoActivoRef.current) {
+              audioFail.current.currentTime = 0;
+              audioFail.current.play().catch(() => {});
+            }
             // 2. Encendemos el escudo de inmunidad (60 fotogramas = 1 segundo de seguridad)
             invulnerableRef.current = true;
             tiempoInvulnerableRef.current = 60;
@@ -941,7 +945,7 @@ function MiJuego() {
     // window.addEventListener("keydown", manejarTeclado);
     window.addEventListener("keydown", manejarKeyDown);
     window.addEventListener("keyup", manejarKeyUp);
-    // window.addEventListener("shift", manejarKeyUp);
+    window.addEventListener("shift", manejarKeyUp);
 
     /**************************************
       💻 FULLSCREEN Escuchador para sincronizar de manera segura el icono del botón pantalla completa 👇
@@ -961,7 +965,7 @@ function MiJuego() {
       // window.removeEventListener("keydown", manejarTeclado);
       window.removeEventListener("keydown", manejarKeyDown);
       window.removeEventListener("keyup", manejarKeyUp);
-      // window.removeEventListener("shift", manejarKeyUp);
+      window.removeEventListener("shift", manejarKeyUp);
 
       // 👇 Apagamos los radares del celular 👇
       window.removeEventListener("resize", manejarResize);
